@@ -1,6 +1,8 @@
 body {
     color: #353535;
     font-family: Helvetica, sans-serif;
+    background: url(http://i.imgur.com/GHr12sH.jpg) no-repeat center center fixed;
+	background-size: cover;
 }
 
 nav {
