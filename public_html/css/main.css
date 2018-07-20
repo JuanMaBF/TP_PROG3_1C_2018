@@ -1,0 +1,21 @@
+body {
+    color: #353535;
+    font-family: Helvetica, sans-serif;
+}
+
+nav {
+    background-color: #0275d8;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+nav h2 {
+    color: white;
+    margin-left: 10px;
+}
+
+@media screen and (max-width: 991px){
+    nav.ml-auto {
+        margin-top: -31px;
+    }
+}
