@@ -105,6 +105,7 @@ var pedidosLoader;
             var _this = this;
             this.server.getPedidos(function (ped) {
                 _this.pedidos = JSON.parse(ped);
+                console.log(_this.pedidos);
             });
         };
         return pedidosLoader;

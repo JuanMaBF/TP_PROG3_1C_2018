@@ -114,6 +114,7 @@ namespace pedidosLoader {
         private getPedidos() {
             this.server.getPedidos((ped: string) => {
                 this.pedidos = JSON.parse(ped);
+                console.log(this.pedidos);
             });
         }
 
