@@ -21,3 +21,8 @@ nav h2 {
         margin-top: -31px;
     }
 }
+
+.row {
+    width: 100%;
+    margin-left: 0px !important;
+}

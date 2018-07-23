@@ -53,12 +53,6 @@ namespace pedidosLoader {
                 this.server.connection(data, (rta: any) => {
                     alert(rta);
                 });
-                this.elementsIndex = 0;
-                let elementos = $('.pedido-elemento');
-                for(let i=0; i < elementos.length; i++) {
-                    elementos[i].remove();
-                }
-                this.addElemento();
             }
         }
 
@@ -101,6 +95,19 @@ namespace pedidosLoader {
             return isValid;
         }
 
+        public resetForm(): void {
+            this.elementsIndex = 0;
+            let elementos = $('.pedido-elemento');
+            for(let i=0; i < elementos.length; i++) {
+                elementos[i].remove();
+            }
+            this.addElemento();
+            $('#numeroMesa').val('1');
+            $('#numeroMesaError').css('display', 'none');
+            $('#nombreCliente').val('');
+            $('#nombreClienteError').css('display', 'none');
+        }
+
     }
 
 }
@@ -119,4 +126,8 @@ function addElemento() {
 }
 function removeElemento(index: number) {
     plObj.removeElemento(index);
+}
+
+function resetForm() {
+    plObj.resetForm();
 }

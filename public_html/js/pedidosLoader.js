@@ -44,12 +44,6 @@ var pedidosLoader;
                 this.server.connection(data, function (rta) {
                     alert(rta);
                 });
-                this.elementsIndex = 0;
-                var elementos = $('.pedido-elemento');
-                for (var i = 0; i < elementos.length; i++) {
-                    elementos[i].remove();
-                }
-                this.addElemento();
             }
         };
         pedidosLoader.prototype.validatePedido = function () {
@@ -92,6 +86,18 @@ var pedidosLoader;
             }
             return isValid;
         };
+        pedidosLoader.prototype.resetForm = function () {
+            this.elementsIndex = 0;
+            var elementos = $('.pedido-elemento');
+            for (var i = 0; i < elementos.length; i++) {
+                elementos[i].remove();
+            }
+            this.addElemento();
+            $('#numeroMesa').val('1');
+            $('#numeroMesaError').css('display', 'none');
+            $('#nombreCliente').val('');
+            $('#nombreClienteError').css('display', 'none');
+        };
         return pedidosLoader;
     }());
     pedidosLoader_1.pedidosLoader = pedidosLoader;
@@ -108,4 +114,7 @@ function addElemento() {
 }
 function removeElemento(index) {
     plObj.removeElemento(index);
+}
+function resetForm() {
+    plObj.resetForm();
 }
