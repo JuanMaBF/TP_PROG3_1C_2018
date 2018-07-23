@@ -1,17 +1,21 @@
 "use strict";
 ///<reference path="../node_modules/@types/jquery/index.d.ts"/>
 ///<reference path="./server.ts"/>
+///<reference path="./model/pedidosHandler.ts"/>
 
 namespace pedidosLoader {
 
     export class pedidosLoader {
 
         private server : server.server;
+        private pedidos: pedidosHandler.pedidosHandler;
         private elementsIndex: number;
 
         public constructor() {
             this.server = new server.server();
             this.elementsIndex = 1;
+            this.pedidos = new pedidosHandler.pedidosHandler();
+            this.getPedidos();
         }
 
         public addElemento(): void {
@@ -48,10 +52,9 @@ namespace pedidosLoader {
 
         public cargarPedido(): void {
             if(this.validatePedido()) {
-                let data;
-
-                this.server.connection(data, (rta: any) => {
-                    alert(rta);
+                let pedidosJson = JSON.stringify(this.pedidos);
+                this.server.setPedidos(pedidosJson, () => {
+                    $("#pedidos-modal").modal();
                 });
             }
         }
@@ -106,6 +109,12 @@ namespace pedidosLoader {
             $('#numeroMesaError').css('display', 'none');
             $('#nombreCliente').val('');
             $('#nombreClienteError').css('display', 'none');
+        }
+
+        private getPedidos() {
+            this.server.getPedidos((ped: string) => {
+                this.pedidos = JSON.parse(ped);
+            });
         }
 
     }

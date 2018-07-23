@@ -1,12 +1,15 @@
 "use strict";
 ///<reference path="../node_modules/@types/jquery/index.d.ts"/>
 ///<reference path="./server.ts"/>
+///<reference path="./model/pedidosHandler.ts"/>
 var pedidosLoader;
 (function (pedidosLoader_1) {
     var pedidosLoader = /** @class */ (function () {
         function pedidosLoader() {
             this.server = new server.server();
             this.elementsIndex = 1;
+            this.pedidos = new pedidosHandler.pedidosHandler();
+            this.getPedidos();
         }
         pedidosLoader.prototype.addElemento = function () {
             var newElement = '';
@@ -40,9 +43,9 @@ var pedidosLoader;
         };
         pedidosLoader.prototype.cargarPedido = function () {
             if (this.validatePedido()) {
-                var data = void 0;
-                this.server.connection(data, function (rta) {
-                    alert(rta);
+                var pedidosJson = JSON.stringify(this.pedidos);
+                this.server.setPedidos(pedidosJson, function () {
+                    $("#pedidos-modal").modal();
                 });
             }
         };
@@ -97,6 +100,12 @@ var pedidosLoader;
             $('#numeroMesaError').css('display', 'none');
             $('#nombreCliente').val('');
             $('#nombreClienteError').css('display', 'none');
+        };
+        pedidosLoader.prototype.getPedidos = function () {
+            var _this = this;
+            this.server.getPedidos(function (ped) {
+                _this.pedidos = JSON.parse(ped);
+            });
         };
         return pedidosLoader;
     }());
