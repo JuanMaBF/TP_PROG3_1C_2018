@@ -61,7 +61,8 @@
                                     <a class="dropdown-item" href="#">Pendientes</a>
                                     <a class="dropdown-item" href="#">En preparación</a>
                                     <a class="dropdown-item" href="#">Listo para servir</a>
-                                    <a class="dropdown-item" href="#">Todos</a>
+                                    <a class="dropdown-item" href="#">Activos</a>
+                                    <a class="dropdown-item" href="#">Terminados</a>
                                 </div>
                             </div>
                         </div>
@@ -133,7 +134,7 @@
                                     <div id="lista-elementos"> 
                                         <div class="form-row pedido-elemento mt-1" id="form-row-0">
                                             <div class="col-7">
-                                                <select required class="form-control">
+                                                <select required class="form-control" id="select-0">
                                                     <option>Vino tinto</option>
                                                     <option>Vino blanco</option>
                                                     <option>Cerveza rubia</option>
@@ -146,7 +147,7 @@
                                                 <div class="invalid-feedback" id="errorEl-0">El tipo de elemento seleccionado es invalid</div>
                                             </div>
                                             <div class="col-3">
-                                                <input type="number" required class="form-control" placeholder="Cantidad">
+                                                <input type="number" id="num-0" required class="form-control" placeholder="Cantidad">
                                                 <div class="invalid-feedback" id="errorNum-0">Indique el número</div>
                                             </div>
                                             <div class="col col-2">
