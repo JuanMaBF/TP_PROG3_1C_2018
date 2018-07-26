@@ -19,12 +19,16 @@ namespace laComanda {
         }
 
         private connection(data: any, callback: Function): void {
+            $("#spinner-modal").modal('toggle');
             $.ajax({
                 url: "./php/server.php",
                 type: "post",
                 data: data,
                 success: (response) => {
-                    callback(response);
+                    setTimeout(() => {
+                        $("#spinner-modal").modal('toggle');
+                        callback(response);
+                    }, 500);
                 },
                 error: (jqXHR, textStatus, errorThrown) => {
                    console.log(textStatus, errorThrown);

@@ -15,7 +15,7 @@ var laComanda;
             var newElement = '';
             newElement += '<div class="form-row pedido-elemento mt-1" id="form-row-' + this.elementsIndex + '">';
             newElement += '<div class="col-7">';
-            newElement += '<select class="form-control" id="select-' + this.elementsIndex + '">';
+            newElement += '<select class="form-control" id="select-' + this.elementsIndex + '" onchange="setPrecio()">';
             newElement += '<option>Vino tinto</option>';
             newElement += '<option>Vino blanco</option>';
             newElement += '<option>Cerveza rubia</option>';
@@ -28,7 +28,7 @@ var laComanda;
             newElement += '<div class="invalid-feedback" id="errorEl-' + this.elementsIndex + '">El tipo de elemento seleccionado es invalid</div>';
             newElement += '</div>';
             newElement += '<div class="col-3">';
-            newElement += '<input type="number" id="num-' + this.elementsIndex + '" required class="form-control" placeholder="Cantidad">';
+            newElement += '<input type="number" id="num-' + this.elementsIndex + '" required class="form-control" placeholder="Cantidad" oninput="setPrecio()">';
             newElement += '<div class="invalid-feedback" id="errorNum-' + this.elementsIndex + '">Indique el número</div>';
             newElement += '</div>';
             newElement += '<div class="col col-2">';
@@ -40,6 +40,41 @@ var laComanda;
         };
         pedidosLoader.prototype.removeElemento = function (index) {
             $('#form-row-' + index).remove();
+        };
+        pedidosLoader.prototype.setPrecio = function () {
+            var newPrecio = this.getPrecio().toString();
+            $('#precio-form').html(newPrecio);
+        };
+        pedidosLoader.prototype.getPrecio = function () {
+            var precio = 0;
+            var htmlElementos = $('.pedido-elemento');
+            for (var i = 0; i < htmlElementos.length; i++) {
+                var index = htmlElementos[i].id.replace('form-row-', '');
+                var nombre = $('#select-' + index).val();
+                var cantidad = $('#num-' + index).val();
+                var precioUnidad = 0;
+                if (cantidad != null && cantidad != 0) {
+                    switch (nombre) {
+                        case 'Vino tinto':
+                            precioUnidad = 25;
+                            break;
+                        case 'Vino blanco':
+                            precioUnidad = 20;
+                            break;
+                        case 'Cerveza rubia':
+                        case 'Cerveza negra':
+                            precioUnidad = 15;
+                        case 'Tarta':
+                        case 'Torta':
+                            precioUnidad = 10;
+                        case 'Empanada':
+                        case 'Alfajor':
+                            precioUnidad = 5;
+                    }
+                    precio += precioUnidad * Number(cantidad);
+                }
+            }
+            return precio;
         };
         pedidosLoader.prototype.cargarPedido = function () {
             var _this = this;
@@ -54,7 +89,7 @@ var laComanda;
                 }
                 var nroMesa = $('#numeroMesa').val();
                 var nombreCliente = $('#nombreCliente').val();
-                this.pedidosHand.agregarPedido(nroMesa, nombreCliente, 1234, elementos);
+                this.pedidosHand.agregarPedido(nroMesa, nombreCliente, this.getPrecio(), elementos);
                 var pedidosJson = JSON.stringify(this.pedidosHand);
                 this.server.setPedidos(pedidosJson, function (rt) {
                     $("#pedidos-modal").modal('toggle');
@@ -92,7 +127,7 @@ var laComanda;
                     $('#errorEl-' + index).css('display', 'none');
                 }
                 var cantidad = $('#num-' + index).val();
-                if (cantidad == null || cantidad == '') {
+                if (cantidad == null || cantidad == '' || Number(cantidad) <= 0) {
                     isValid = false;
                     $('#errorNum-' + index).css('display', 'block');
                 }
@@ -128,14 +163,17 @@ var plObj;
 window.onload = function () {
     plObj = new laComanda.pedidosLoader();
 };
-function cargarPedido() {
-    plObj.cargarPedido();
+function setPrecio() {
+    plObj.setPrecio();
 }
 function addElemento() {
     plObj.addElemento();
 }
 function removeElemento(index) {
     plObj.removeElemento(index);
+}
+function cargarPedido() {
+    plObj.cargarPedido();
 }
 function resetForm() {
     plObj.resetForm();

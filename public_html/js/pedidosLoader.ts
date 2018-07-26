@@ -22,7 +22,7 @@ namespace laComanda {
             let newElement = '';
             newElement += '<div class="form-row pedido-elemento mt-1" id="form-row-'+ this.elementsIndex +'">';
             newElement += '<div class="col-7">';
-            newElement += '<select class="form-control" id="select-'+ this.elementsIndex +'">';
+            newElement += '<select class="form-control" id="select-'+ this.elementsIndex +'" onchange="setPrecio()">';
             newElement += '<option>Vino tinto</option>';
             newElement += '<option>Vino blanco</option>';
             newElement += '<option>Cerveza rubia</option>';
@@ -35,7 +35,7 @@ namespace laComanda {
             newElement += '<div class="invalid-feedback" id="errorEl-'+ this.elementsIndex +'">El tipo de elemento seleccionado es invalid</div>';
             newElement += '</div>';
             newElement += '<div class="col-3">';
-            newElement += '<input type="number" id="num-'+ this.elementsIndex +'" required class="form-control" placeholder="Cantidad">';
+            newElement += '<input type="number" id="num-'+ this.elementsIndex +'" required class="form-control" placeholder="Cantidad" oninput="setPrecio()">';
             newElement += '<div class="invalid-feedback" id="errorNum-'+ this.elementsIndex +'">Indique el número</div>';
             newElement += '</div>';
             newElement += '<div class="col col-2">';
@@ -50,6 +50,43 @@ namespace laComanda {
             $('#form-row-'+index).remove();
         }
 
+        public setPrecio(): void {
+            let newPrecio = this.getPrecio().toString();
+            $('#precio-form').html(newPrecio);
+        }
+
+        private getPrecio(): number {
+            let precio = 0;
+            let htmlElementos = $('.pedido-elemento');
+            for(let i=0; i < htmlElementos.length; i++) {
+                let index = htmlElementos[i].id.replace('form-row-', '');
+                let nombre = $('#select-'+index).val() as string;
+                let cantidad = $('#num-'+index).val() as number;
+                let precioUnidad: number = 0;
+                if(cantidad != null && cantidad != 0) {
+                    switch(nombre) {
+                        case 'Vino tinto':
+                            precioUnidad = 25;
+                            break
+                        case 'Vino blanco':
+                            precioUnidad = 20;
+                            break;
+                        case 'Cerveza rubia':
+                        case 'Cerveza negra':
+                            precioUnidad = 15;
+                        case 'Tarta':
+                        case 'Torta':
+                            precioUnidad = 10;
+                        case 'Empanada':
+                        case 'Alfajor':
+                            precioUnidad = 5;
+                    }
+                    precio += precioUnidad*Number(cantidad);
+                }
+            }
+            return precio;
+        }
+
         public cargarPedido(): void {
             if(this.validatePedido()) {
                 let htmlElementos = $('.pedido-elemento');
@@ -58,11 +95,11 @@ namespace laComanda {
                     let index = htmlElementos[i].id.replace('form-row-', '');
                     let nombre = $('#select-'+index).val() as string;
                     let cantidad = $('#num-'+index).val() as number;
-                    elementos.push(new elemento(nombre, cantidad))
+                    elementos.push(new elemento(nombre, cantidad));
                 }
                 let nroMesa = $('#numeroMesa').val() as number;
                 let nombreCliente = $('#nombreCliente').val() as string;
-                this.pedidosHand.agregarPedido(nroMesa, nombreCliente, 1234, elementos);
+                this.pedidosHand.agregarPedido(nroMesa, nombreCliente, this.getPrecio(), elementos);
                 let pedidosJson = JSON.stringify(this.pedidosHand);
                 this.server.setPedidos(pedidosJson, (rt: any) => {
                     $("#pedidos-modal").modal('toggle');
@@ -100,7 +137,7 @@ namespace laComanda {
                     $('#errorEl-'+index).css('display', 'none');
                 }
                 let cantidad = $('#num-'+index).val();
-                if(cantidad == null || cantidad == '') {
+                if(cantidad == null || cantidad == '' || Number(cantidad) <= 0) {
                     isValid = false;
                     $('#errorNum-'+index).css('display', 'block');
                 } else {
@@ -139,14 +176,20 @@ window.onload = function() {
     plObj = new laComanda.pedidosLoader();
 };
 
-function cargarPedido() {
-     plObj.cargarPedido(); 
+function setPrecio() {
+    plObj.setPrecio();
 }
+
 function addElemento() { 
     plObj.addElemento(); 
 }
+
 function removeElemento(index: number) {
     plObj.removeElemento(index);
+}
+
+function cargarPedido() {
+    plObj.cargarPedido(); 
 }
 
 function resetForm() {

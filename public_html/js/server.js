@@ -18,12 +18,16 @@ var laComanda;
             this.connection(data, callback);
         };
         server.prototype.connection = function (data, callback) {
+            $("#spinner-modal").modal('toggle');
             $.ajax({
                 url: "./php/server.php",
                 type: "post",
                 data: data,
                 success: function (response) {
-                    callback(response);
+                    setTimeout(function () {
+                        $("#spinner-modal").modal('toggle');
+                        callback(response);
+                    }, 500);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     console.log(textStatus, errorThrown);

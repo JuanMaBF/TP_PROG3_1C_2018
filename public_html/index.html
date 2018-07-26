@@ -9,6 +9,7 @@
     <script src="./js/model/pedidosHandler.js"></script>
     <script src="./js/server.js"></script>
     <script src="./js/pedidosLoader.js"></script>
+    <script src="./js/grillaHandler.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -135,7 +136,7 @@
                                     <div id="lista-elementos"> 
                                         <div class="form-row pedido-elemento mt-1" id="form-row-0">
                                             <div class="col-7">
-                                                <select required class="form-control" id="select-0">
+                                                <select required class="form-control" id="select-0" onchange="setPrecio()">
                                                     <option>Vino tinto</option>
                                                     <option>Vino blanco</option>
                                                     <option>Cerveza rubia</option>
@@ -148,7 +149,7 @@
                                                 <div class="invalid-feedback" id="errorEl-0">El tipo de elemento seleccionado es invalid</div>
                                             </div>
                                             <div class="col-3">
-                                                <input type="number" id="num-0" required class="form-control" placeholder="Cantidad">
+                                                <input type="number" id="num-0" required class="form-control" placeholder="Cantidad" oninput="setPrecio()">
                                                 <div class="invalid-feedback" id="errorNum-0">Indique el número</div>
                                             </div>
                                             <div class="col col-2">
@@ -160,6 +161,7 @@
                                 </form>
                             </div>
                         </div>
+                        <b>Precio: $<span id="precio-form">0</span></b>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -172,20 +174,10 @@
   
     <!-- Modal -->
     <div class="modal fade" id="spinner-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 235px;">
+        <div class="modal-content" >
             <div class="modal-body">
-            ...
-            </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+                <img src="./img/spinner.gif">
             </div>
         </div>
         </div>
