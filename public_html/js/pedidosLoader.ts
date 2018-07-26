@@ -1,20 +1,20 @@
 "use strict";
 ///<reference path="../node_modules/@types/jquery/index.d.ts"/>
-///<reference path="./server.ts"/>
 ///<reference path="./model/pedidosHandler.ts"/>
+///<reference path="./server.ts"/>
 
-namespace pedidosLoader {
+namespace laComanda {
 
     export class pedidosLoader {
 
-        private server : server.server;
-        private pedidos: pedidosHandler.pedidosHandler;
+        private server : server;
+        private pedidosHand: pedidosHandler;
         private elementsIndex: number;
 
         public constructor() {
-            this.server = new server.server();
+            this.server = new server();
             this.elementsIndex = 1;
-            this.pedidos = new pedidosHandler.pedidosHandler();
+            this.pedidosHand = new pedidosHandler();
             this.getPedidos();
         }
 
@@ -35,7 +35,7 @@ namespace pedidosLoader {
             newElement += '<div class="invalid-feedback" id="errorEl-'+ this.elementsIndex +'">El tipo de elemento seleccionado es invalid</div>';
             newElement += '</div>';
             newElement += '<div class="col-3">';
-            newElement += '<input type="number" class="form-control" placeholder="Cantidad">';
+            newElement += '<input type="number" id="num-'+ this.elementsIndex +'" required class="form-control" placeholder="Cantidad">';
             newElement += '<div class="invalid-feedback" id="errorNum-'+ this.elementsIndex +'">Indique el número</div>';
             newElement += '</div>';
             newElement += '<div class="col col-2">';
@@ -52,9 +52,21 @@ namespace pedidosLoader {
 
         public cargarPedido(): void {
             if(this.validatePedido()) {
-                let pedidosJson = JSON.stringify(this.pedidos);
-                this.server.setPedidos(pedidosJson, () => {
-                    $("#pedidos-modal").modal();
+                let htmlElementos = $('.pedido-elemento');
+                let elementos = new Array<elemento>();
+                for(let i=0; i < htmlElementos.length; i++) {
+                    let index = htmlElementos[i].id.replace('form-row-', '');
+                    let nombre = $('#select-'+index).val() as string;
+                    let cantidad = $('#num-'+index).val() as number;
+                    elementos.push(new elemento(nombre, cantidad))
+                }
+                let nroMesa = $('#numeroMesa').val() as number;
+                let nombreCliente = $('#nombreCliente').val() as string;
+                this.pedidosHand.agregarPedido(nroMesa, nombreCliente, 1234, elementos);
+                let pedidosJson = JSON.stringify(this.pedidosHand);
+                this.server.setPedidos(pedidosJson, (rt: any) => {
+                    $("#pedidos-modal").modal('toggle');
+                    this.resetForm();
                 });
             }
         }
@@ -112,9 +124,8 @@ namespace pedidosLoader {
         }
 
         private getPedidos() {
-            this.server.getPedidos((ped: string) => {
-                this.pedidos = JSON.parse(ped);
-                console.log(this.pedidos);
+            this.server.getPedidos((ped: string) => { 
+                this.pedidosHand = pedidosHandler.parse(JSON.parse(ped));
             });
         }
 
@@ -122,10 +133,10 @@ namespace pedidosLoader {
 
 }
 
-var plObj: pedidosLoader.pedidosLoader;
+var plObj: laComanda.pedidosLoader;
 
 window.onload = function() {
-    plObj = new pedidosLoader.pedidosLoader();
+    plObj = new laComanda.pedidosLoader();
 };
 
 function cargarPedido() {

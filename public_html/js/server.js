@@ -1,6 +1,6 @@
 "use strict";
-var server;
-(function (server_1) {
+var laComanda;
+(function (laComanda) {
     var server = /** @class */ (function () {
         function server() {
         }
@@ -32,5 +32,5 @@ var server;
         };
         return server;
     }());
-    server_1.server = server;
-})(server || (server = {}));
+    laComanda.server = server;
+})(laComanda || (laComanda = {}));

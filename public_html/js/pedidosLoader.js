@@ -1,14 +1,14 @@
 "use strict";
 ///<reference path="../node_modules/@types/jquery/index.d.ts"/>
-///<reference path="./server.ts"/>
 ///<reference path="./model/pedidosHandler.ts"/>
-var pedidosLoader;
-(function (pedidosLoader_1) {
+///<reference path="./server.ts"/>
+var laComanda;
+(function (laComanda) {
     var pedidosLoader = /** @class */ (function () {
         function pedidosLoader() {
-            this.server = new server.server();
+            this.server = new laComanda.server();
             this.elementsIndex = 1;
-            this.pedidos = new pedidosHandler.pedidosHandler();
+            this.pedidosHand = new laComanda.pedidosHandler();
             this.getPedidos();
         }
         pedidosLoader.prototype.addElemento = function () {
@@ -28,7 +28,7 @@ var pedidosLoader;
             newElement += '<div class="invalid-feedback" id="errorEl-' + this.elementsIndex + '">El tipo de elemento seleccionado es invalid</div>';
             newElement += '</div>';
             newElement += '<div class="col-3">';
-            newElement += '<input type="number" class="form-control" placeholder="Cantidad">';
+            newElement += '<input type="number" id="num-' + this.elementsIndex + '" required class="form-control" placeholder="Cantidad">';
             newElement += '<div class="invalid-feedback" id="errorNum-' + this.elementsIndex + '">Indique el número</div>';
             newElement += '</div>';
             newElement += '<div class="col col-2">';
@@ -42,10 +42,23 @@ var pedidosLoader;
             $('#form-row-' + index).remove();
         };
         pedidosLoader.prototype.cargarPedido = function () {
+            var _this = this;
             if (this.validatePedido()) {
-                var pedidosJson = JSON.stringify(this.pedidos);
-                this.server.setPedidos(pedidosJson, function () {
-                    $("#pedidos-modal").modal();
+                var htmlElementos = $('.pedido-elemento');
+                var elementos = new Array();
+                for (var i = 0; i < htmlElementos.length; i++) {
+                    var index = htmlElementos[i].id.replace('form-row-', '');
+                    var nombre = $('#select-' + index).val();
+                    var cantidad = $('#num-' + index).val();
+                    elementos.push(new laComanda.elemento(nombre, cantidad));
+                }
+                var nroMesa = $('#numeroMesa').val();
+                var nombreCliente = $('#nombreCliente').val();
+                this.pedidosHand.agregarPedido(nroMesa, nombreCliente, 1234, elementos);
+                var pedidosJson = JSON.stringify(this.pedidosHand);
+                this.server.setPedidos(pedidosJson, function (rt) {
+                    $("#pedidos-modal").modal('toggle');
+                    _this.resetForm();
                 });
             }
         };
@@ -104,17 +117,16 @@ var pedidosLoader;
         pedidosLoader.prototype.getPedidos = function () {
             var _this = this;
             this.server.getPedidos(function (ped) {
-                _this.pedidos = JSON.parse(ped);
-                console.log(_this.pedidos);
+                _this.pedidosHand = laComanda.pedidosHandler.parse(JSON.parse(ped));
             });
         };
         return pedidosLoader;
     }());
-    pedidosLoader_1.pedidosLoader = pedidosLoader;
-})(pedidosLoader || (pedidosLoader = {}));
+    laComanda.pedidosLoader = pedidosLoader;
+})(laComanda || (laComanda = {}));
 var plObj;
 window.onload = function () {
-    plObj = new pedidosLoader.pedidosLoader();
+    plObj = new laComanda.pedidosLoader();
 };
 function cargarPedido() {
     plObj.cargarPedido();
