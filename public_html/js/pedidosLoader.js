@@ -160,8 +160,10 @@ var laComanda;
     laComanda.pedidosLoader = pedidosLoader;
 })(laComanda || (laComanda = {}));
 var plObj;
+var loginObj;
 window.onload = function () {
     plObj = new laComanda.pedidosLoader();
+    loginObj = new laComanda.login();
 };
 function setPrecio() {
     plObj.setPrecio();

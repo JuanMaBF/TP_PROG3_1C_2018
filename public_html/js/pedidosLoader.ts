@@ -171,9 +171,11 @@ namespace laComanda {
 }
 
 var plObj: laComanda.pedidosLoader;
+var loginObj: laComanda.login;
 
 window.onload = function() {
     plObj = new laComanda.pedidosLoader();
+    loginObj = new laComanda.login();
 };
 
 function setPrecio() {

@@ -4,6 +4,14 @@ var laComanda;
     var server = /** @class */ (function () {
         function server() {
         }
+        server.prototype.login = function (user, pass, callback) {
+            var data = {
+                "user": user,
+                "pass": pass,
+                "action": "login"
+            };
+            this.connection(data, callback);
+        };
         server.prototype.getPedidos = function (callback) {
             var data = {
                 "action": "getPedidos"

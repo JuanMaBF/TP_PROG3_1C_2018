@@ -3,6 +3,15 @@ namespace laComanda {
 
     export class server {
 
+        public login(user: string, pass: string, callback: Function): void {
+            let data = {
+                "user": user,
+                "pass": pass,
+                "action": "login"
+            }
+            this.connection(data, callback);
+        }
+
         public getPedidos(callback: Function): void {
             let data = {
                 "action": "getPedidos"
