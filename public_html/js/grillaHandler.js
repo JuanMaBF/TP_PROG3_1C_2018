@@ -238,3 +238,8 @@ function cambiarEstadoMesa(numero) {
 function cargarTotales() {
     grillaObj.cargarTotales();
 }
+function logout() {
+    localStorage.setItem('tipoUser', '');
+    localStorage.setItem('username', '');
+    $(location).attr('href', './login.html');
+}

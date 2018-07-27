@@ -300,7 +300,6 @@ namespace laComanda {
             newHtml += 'Total recaudado: $'+total;
             $("#modal-total").html(newHtml);
         }
-
     }
 }
 
@@ -326,4 +325,10 @@ function cambiarEstadoMesa(numero: string) {
 
 function cargarTotales() {
     grillaObj.cargarTotales();
+}
+
+function logout() {
+    localStorage.setItem('tipoUser', '');
+    localStorage.setItem('username', '');
+    $(location).attr('href', './login.html');
 }
