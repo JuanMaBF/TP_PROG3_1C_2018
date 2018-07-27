@@ -17,28 +17,20 @@ namespace laComanda {
             this.getPedidos();
         }
 
-        private getPedidos() {
+        public getPedidos() {
             this.server.getPedidos((ped: string) => { 
                 this.pedidosHand = pedidosHandler.parse(JSON.parse(ped));
                 this.initGrilla();
             });
         }
 
-        private initGrilla() {
+        public initGrilla() {
             if(this.tipoUsuario == 'mozo' || this.tipoUsuario == 'socio') {
                 $('#agregar-pedido-btn').css('display', 'block');
             } else {
                 if(this.tipoUsuario == 'bartender' || this.tipoUsuario == 'cerveceros') {
                     $('.cocina-only').css('display', 'none');
                 }
-            }
-            this.reloadGrilla();
-        }
-
-        public reloadGrilla(): void {
-            if(this.tipoUsuario == 'mozo' || this.tipoUsuario == 'socio') {
-
-            } else {
                 this.loadGrillaCocineros();
             }
         }
@@ -116,9 +108,8 @@ namespace laComanda {
         public updateEstado(id: string, index: number) {
             let newEstado = $("#select-"+id+"-"+index).val() as string;
             this.pedidosHand.pedidos.filter(p => p.id == id)[0].elementos[index].estado = newEstado;
-            console.log(newEstado);
             this.server.setPedidos(JSON.stringify(this.pedidosHand), () => {
-                this.reloadGrilla();
+                //this.reloadGrilla();
             });
         }
 
@@ -129,6 +120,10 @@ function updateEstado(id: string, index: number) {
     grillaObj.updateEstado(id, index);
 }
 
-function reloadGrilla() {
-    grillaObj.reloadGrilla();
+function initGrilla() {
+    grillaObj.initGrilla();
+}
+
+function getPedidos() {
+    grillaObj.getPedidos();
 }

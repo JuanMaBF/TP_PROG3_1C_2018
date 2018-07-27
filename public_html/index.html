@@ -23,26 +23,6 @@
         </nav>
     </header>
 
-        <!-- 
-            COLUMNAS 
-
-            Cocineros (Lista de pedidos)
-            - Pedido
-            - Estado
-
-            Mozos (Lista de mesas - Solo las propias)
-            - Numero de mesa
-            - Nombre del cliente
-            - ID de pedido
-            - Pedido
-            - Estado general
-                -> detalle del estado
-            - Precio
-            - Acciones
-
-            Admin (Lista de todas las mesas)
-        -->
-
     <div class="row justify-content-center mt-5">
         <div class="col col-12 col-md-8">
             <div class="card">
@@ -50,114 +30,113 @@
                     <h3>Pedidos</h3>
                 </div>
                 <div class="card-body">
-                    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                        <div style="display: none;" id="agregar-pedido-btn" class="btn-group mr-2" role="group" aria-label="First group">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#pedidos-modal">Agregar pedido</button>
+                    <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
+                        <div class="btn-group" role="group">
+                            <button id="agregar-pedido-btn" style="display: none;" type="button" class="btn btn-primary  mr-2" data-toggle="modal" data-target="#pedidos-modal">Agregar pedido</button>
+                            <select required class="form-control" id="select-filter" onchange="initGrilla()">
+                                <option>Activos</option>
+                                <option value="Pendiente">Pendientes</option>
+                                <option class="cocina-only">En preparación</option>
+                                <option>Listo para servir</option>
+                                <option value="Terminado">Terminados</option>
+                                <option>Todos</option>
+                            </select>
                         </div>
                         <div class="btn-group" role="group">
-                            <div class="btn-group" role="group">
-                                <select required class="form-control" id="select-filter" onchange="reloadGrilla()">
-                                    <option>Activos</option>
-                                    <option value="Pendiente">Pendientes</option>
-                                    <option class="cocina-only">En preparación</option>
-                                    <option>Listo para servir</option>
-                                    <option value="Terminado">Terminados</option>
-                                    <option>Todos</option>
-                                </select>
-                            </div>
+                            <button onclick="getPedidos()" type="button" class="btn btn-primary">Actualizar</button>
                         </div>
-                        <table id="tabla-pedidos" class="table mt-3">
-                            <thead>
-                                <tr>
-                                <th scope="col">Pedido</th>
-                                <th scope="col">Cantidad</th>
-                                <th scope="col">Estado</th>
-                                </tr>
-                            </thead>
-                        </table>
+                    </div>
+                    <table id="tabla-pedidos" class="table mt-3">
+                        <thead>
+                            <tr>
+                            <th scope="col">Pedido</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Estado</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
-            </div>
-        </div>     
-    </div>           
+            </div>     
+        </div>           
 
-    <div class="modal fade" id="pedidos-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="resetForm()">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="numeroMesa">Número de mesa</label>
-                            <select required class="form-control" id="numeroMesa">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </select>
-                            <div class="invalid-feedback" id="numeroMesaError">Número de mesa incorrecto</div>
-                        </div>
-                        <div class="form-group">
-                            <label for="nombreCliente">Nombre de cliente</label>
-                            <input type="text" class="form-control" required id="nombreCliente" placeholder="Nombre del cliente">
-                            <div class="invalid-feedback" id="nombreClienteError">Debe indicar el nombre del cliente</div>
-                        </div>
-                        <div class="card">
-                            <div class="card-body">
-                                <form>
-                                    <div id="lista-elementos"> 
-                                        <div class="form-row pedido-elemento mt-1" id="form-row-0">
-                                            <div class="col-7">
-                                                <select required class="form-control" id="select-0" onchange="setPrecio()">
-                                                    <option>Vino tinto</option>
-                                                    <option>Vino blanco</option>
-                                                    <option>Cerveza rubia</option>
-                                                    <option>Cerveza negra</option>
-                                                    <option>Empanada</option>
-                                                    <option>Tarta</option>
-                                                    <option>Alfajor</option>
-                                                    <option>Torta</option>
-                                                </select>
-                                                <div class="invalid-feedback" id="errorEl-0">El tipo de elemento seleccionado es invalid</div>
-                                            </div>
-                                            <div class="col-3">
-                                                <input type="number" id="num-0" required class="form-control" placeholder="Cantidad" oninput="setPrecio()">
-                                                <div class="invalid-feedback" id="errorNum-0">Indique el número</div>
-                                            </div>
-                                            <div class="col col-2">
-                                                <button type="button" class="btn btn-secondary" onclick="removeElemento(0)">X</button>
+        <div class="modal fade" id="pedidos-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="resetForm()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="numeroMesa">Número de mesa</label>
+                                <select required class="form-control" id="numeroMesa">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                                <div class="invalid-feedback" id="numeroMesaError">Número de mesa incorrecto</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="nombreCliente">Nombre de cliente</label>
+                                <input type="text" class="form-control" required id="nombreCliente" placeholder="Nombre del cliente">
+                                <div class="invalid-feedback" id="nombreClienteError">Debe indicar el nombre del cliente</div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <form>
+                                        <div id="lista-elementos"> 
+                                            <div class="form-row pedido-elemento mt-1" id="form-row-0">
+                                                <div class="col-7">
+                                                    <select required class="form-control" id="select-0" onchange="setPrecio()">
+                                                        <option>Vino tinto</option>
+                                                        <option>Vino blanco</option>
+                                                        <option>Cerveza rubia</option>
+                                                        <option>Cerveza negra</option>
+                                                        <option>Empanada</option>
+                                                        <option>Tarta</option>
+                                                        <option>Alfajor</option>
+                                                        <option>Torta</option>
+                                                    </select>
+                                                    <div class="invalid-feedback" id="errorEl-0">El tipo de elemento seleccionado es invalid</div>
+                                                </div>
+                                                <div class="col-3">
+                                                    <input type="number" id="num-0" required class="form-control" placeholder="Cantidad" oninput="setPrecio()">
+                                                    <div class="invalid-feedback" id="errorNum-0">Indique el número</div>
+                                                </div>
+                                                <div class="col col-2">
+                                                    <button type="button" class="btn btn-secondary" onclick="removeElemento(0)">X</button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <button type="button" class="btn btn-primary mt-1" onclick="addElemento()">Agregar elemento</button>
-                                </form>
+                                        <button type="button" class="btn btn-primary mt-1" onclick="addElemento()">Agregar elemento</button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                        <b>Precio: $<span id="precio-form">0</span></b>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="resetForm()">Cancelar</button>
-                    <button type="button" class="btn btn-success" onclick="cargarPedido()">Cargar</button>
+                            <b>Precio: $<span id="precio-form">0</span></b>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="resetForm()">Cancelar</button>
+                        <button type="button" class="btn btn-success" onclick="cargarPedido()">Cargar</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
   
-    <!-- Modal -->
-    <div class="modal fade" id="spinner-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 235px;">
-        <div class="modal-content" >
-            <div class="modal-body">
-                <img src="./img/spinner.gif">
+        <!-- Modal -->
+        <div class="modal fade" id="spinner-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 235px;">
+            <div class="modal-content" >
+                <div class="modal-body">
+                    <img src="./img/spinner.gif">
+                </div>
+            </div>
             </div>
         </div>
-        </div>
     </div>
-
 </body>

@@ -26,13 +26,6 @@ var laComanda;
                 if (this.tipoUsuario == 'bartender' || this.tipoUsuario == 'cerveceros') {
                     $('.cocina-only').css('display', 'none');
                 }
-            }
-            this.reloadGrilla();
-        };
-        grillaHandler.prototype.reloadGrilla = function () {
-            if (this.tipoUsuario == 'mozo' || this.tipoUsuario == 'socio') {
-            }
-            else {
                 this.loadGrillaCocineros();
             }
         };
@@ -87,12 +80,10 @@ var laComanda;
             return elementosList;
         };
         grillaHandler.prototype.updateEstado = function (id, index) {
-            var _this = this;
             var newEstado = $("#select-" + id + "-" + index).val();
             this.pedidosHand.pedidos.filter(function (p) { return p.id == id; })[0].elementos[index].estado = newEstado;
-            console.log(newEstado);
             this.server.setPedidos(JSON.stringify(this.pedidosHand), function () {
-                _this.reloadGrilla();
+                //this.reloadGrilla();
             });
         };
         return grillaHandler;
@@ -102,6 +93,9 @@ var laComanda;
 function updateEstado(id, index) {
     grillaObj.updateEstado(id, index);
 }
-function reloadGrilla() {
-    grillaObj.reloadGrilla();
+function initGrilla() {
+    grillaObj.initGrilla();
+}
+function getPedidos() {
+    grillaObj.getPedidos();
 }
