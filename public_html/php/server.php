@@ -11,6 +11,12 @@ switch($action) {
     case "setPedidos":
         echo setPedidos($_POST["pedidos"]);
         break; 
+    case "getMesas":
+        echo getLasMesas();
+        break;
+    case "setMesas":
+        echo setLasMesas($_POST["mesas"]);
+        break;
 }
 
 function getPedidos() {
@@ -26,19 +32,32 @@ function setPedidos($pedidos) {
     fclose($pedidosFile);
 }
 
+function getLasMesas() {
+    $mesasFile = fopen("archivos/mesas.txt", "r") or die("No se puede abrir el archivo");
+    $fileContent = fread($mesasFile,filesize("archivos/pedidos.txt"));
+    fclose($mesasFile);
+    return $fileContent;
+}
+
+function setLasMesas($mesas) {
+    $mesasFile = fopen("archivos/mesas.txt", "w") or die("No se puede abrir el archivo");
+    fwrite($mesasFile, $mesas);
+    fclose($mesasFile);
+}
+
 function login($usr, $pass) {
-    if($usr == "bartender") {
-        return $pass == "bartender" ? "ok" : "pass";
-    } else if($usr == "cerveceros") {
-        return $pass == "cerveceros" ? "ok" : "pass";
-    } else if($usr == "cocineroCocina") {
-        return $pass == "cocineroCocina" ? "ok" : "pass";
-    } else if($usr == "cocineroPostres") {
-        return $pass == "cocineroPostres" ? "ok" : "pass";
-    } else if($usr == "mozo") {
-        return $pass == "mozo" ? "ok" : "pass";
-    } else if($usr == "socio") {
-        return $pass == "socio" ? "ok" : "pass";
+    if($usr == "bartender1" || $usr == "bartender2") {
+        return $pass == "bartender" ? $pass : "pass";
+    } else if($usr == "cerveceros1" || $usr == "cerveceros2") {
+        return $pass == "cerveceros" ? $pass : "pass";
+    } else if($usr == "cocineroCocina1" || $usr == "cocineroCocina2") {
+        return $pass == "cocineroCocina" ?$pass : "pass";
+    } else if($usr == "cocineroPostres1" || $usr == "cocineroPostres2") {
+        return $pass == "cocineroPostres" ? $pass : "pass";
+    } else if($usr == "mozo1" || $usr == "mozo2" ) {
+        return $pass == "mozo" ? $pass : "pass";
+    } else if($usr == "socio1" || $usr == "socio2") {
+        return $pass == "socio" ? $pass : "pass";
     } else {
         return "user";
     }

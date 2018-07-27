@@ -22,12 +22,13 @@ namespace laComanda {
                     } else if (rt == 'pass') {
                         $('#usuarioError').css('display', 'none');
                         $('#contraError').css('display', 'block');
-                    } else if (rt == 'ok') {
+                    } else  {
                         $('#usuarioError').css('display', 'none');
                         $('#contraError').css('display', 'none');
+                        localStorage.setItem('tipoUser', rt);
+                        localStorage.setItem('username', username);
+                        $(location).attr('href', './index.html');
                     }
-                    localStorage.setItem('user', password);
-                    $(location).attr('href', './index.html');
                 });
             }
         }
@@ -53,7 +54,7 @@ namespace laComanda {
 
         public setTestValue(value: any): void {
             $('#usr-txt').val(value);
-            $('#pass-txt').val(value);
+            $('#pass-txt').val(value.substring(0, value.length - 1));
         }
 
     }

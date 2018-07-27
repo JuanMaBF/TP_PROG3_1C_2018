@@ -7,9 +7,11 @@ var laComanda;
     var grillaHandler = /** @class */ (function () {
         function grillaHandler() {
             this.server = new laComanda.server();
+            this.tipoUsuario = localStorage.getItem('tipoUser');
+            this.username = localStorage.getItem('tipoUser');
             this.pedidosHand = new laComanda.pedidosHandler();
-            this.tipoUsuario = localStorage.getItem('user');
             this.getPedidos();
+            this.mesas = new laComanda.lasMesas();
         }
         grillaHandler.prototype.getPedidos = function () {
             var _this = this;
@@ -19,8 +21,13 @@ var laComanda;
             });
         };
         grillaHandler.prototype.initGrilla = function () {
+            var _this = this;
             if (this.tipoUsuario == 'mozo' || this.tipoUsuario == 'socio') {
                 $('#agregar-pedido-btn').css('display', 'block');
+                this.server.getMesas(function (mes) {
+                    _this.mesas = laComanda.lasMesas.parse(JSON.parse(mes));
+                    _this.loadGrillaMesas();
+                });
             }
             else {
                 if (this.tipoUsuario == 'bartender' || this.tipoUsuario == 'cerveceros') {
@@ -44,13 +51,10 @@ var laComanda;
                 var preparacionSel = el.estado == "En preparación" ? 'selected' : '';
                 var listoSel = el.estado == "Listo para servir" ? 'selected' : '';
                 var terminasoSel = el.estado == "Terminado" ? 'selected' : '';
-                newHtml += "\n                    <tr>\n                        <td>" + el.nombre + "</td>\n                        <td>" + el.cantidad + "</td>\n                        <td>\n                            <select id=\"select-" + el.pedidoId + "-" + el.index + "\" class=\"form-control\" \n                            onchange=\"updateEstado('" + el.pedidoId + "', " + el.index + ")\">\n                                <option " + pendienteSel + ">Pendiente</option>\n                                <option " + preparacionSel + " class=\"enPreparacion\">En preparaci\u00F3n</option>\n                                <option " + listoSel + ">Listo para servir</option>\n                                <option " + terminasoSel + ">Terminado</option>\n                            </select>\n                        </td>\n                    </tr>";
+                newHtml += "\n                    <tr>\n                        <td>" + el.nombre + "</td>\n                        <td>" + el.cantidad + "</td>\n                        <td>\n                            <select id=\"select-" + el.pedidoId + "-" + el.index + "\" class=\"form-control\" \n                            onchange=\"updateEstado('" + el.pedidoId + "', " + el.index + ")\">\n                                <option " + pendienteSel + ">Pendiente</option>\n                                <option " + preparacionSel + ">En preparaci\u00F3n</option>\n                                <option " + listoSel + ">Listo para servir</option>\n                                <option " + terminasoSel + ">Terminado</option>\n                            </select>\n                        </td>\n                    </tr>";
             });
             newHtml += "</tbody>";
             $("#tabla-pedidos").html(newHtml);
-            if (this.tipoUsuario == 'bartender' || this.tipoUsuario == 'cerveceros') {
-                $('.enPreparacion').css('display', 'none');
-            }
         };
         grillaHandler.prototype.getFiltredElementos = function () {
             var elementosList = new Array();
@@ -82,9 +86,43 @@ var laComanda;
         grillaHandler.prototype.updateEstado = function (id, index) {
             var newEstado = $("#select-" + id + "-" + index).val();
             this.pedidosHand.pedidos.filter(function (p) { return p.id == id; })[0].elementos[index].estado = newEstado;
-            this.server.setPedidos(JSON.stringify(this.pedidosHand), function () {
-                //this.reloadGrilla();
+            this.pedidosHand.pedidos.filter(function (p) { return p.id == id; })[0].elementos[index].tomadoPor = this.username;
+            this.updateEstadoPedido(this.pedidosHand.pedidos.filter(function (p) { return p.id == id; })[0]);
+            this.server.setPedidos(JSON.stringify(this.pedidosHand), function () { });
+        };
+        grillaHandler.prototype.updateEstadoPedido = function (ped) {
+            var isPendiente = !ped.elementos.some(function (e) { return e.estado != 'Pendiente'; });
+            var isEnPrep = !ped.elementos.some(function (e) { return e.estado != 'En preparación'; });
+            var isListo = !ped.elementos.some(function (e) { return e.estado != 'Listo para servir'; });
+            var isTer = !ped.elementos.some(function (e) { return e.estado != 'Terminado'; });
+            if (isPendiente) {
+                ped.estado = 'Pendiente';
+            }
+            else if (isEnPrep) {
+                ped.estado = 'En preparación';
+            }
+            else if (isListo) {
+                ped.estado = 'Listo para servir';
+            }
+            else if (isTer) {
+                ped.estado = 'Terminado';
+            }
+        };
+        grillaHandler.prototype.loadGrillaMesas = function () {
+            var newHtml = "\n                <thead>\n                    <tr>\n                        <th scope=\"col\">Numero de mesa</th>\n                        <th scope=\"col\">Estado</th>\n                        <th scope=\"col\">Detalles</th>\n                    </tr>\n                </thead>\n                <tbody>";
+            this.mesas.mesas.forEach(function (m) {
+                var espEst = m.estado == "Con cliente esperando pedido" ? 'selected' : '';
+                var comEst = m.estado == "Con clientes comiendo" ? 'selected' : '';
+                var pagEst = m.estado == "Con clientes pagando" ? 'selected' : '';
+                var cerrEst = m.estado == "Cerrada" ? 'selected' : '';
+                newHtml += "\n                    <tr>\n                        <th>" + m.numero + "</th>\n                        <th>\n                            <select onchange=\"cambiarEstadoMesa('" + m.numero + "')\" \n                            class=\"form-control\" id=\"estado-mesa-" + m.numero + "\">\n                                <option " + espEst + ">Con cliente esperando pedido</option>\n                                <option " + comEst + ">Con clientes comiendo</option>\n                                <option " + pagEst + ">Con clientes pagando</option>\n                                <option " + cerrEst + ">Cerrada</option>\n                            </select>\n                        </th>\n                        <th>\n                            <button class=\"btn btn-secondary\" data-toggle=\"modal\" data-target=\"#mesaModal\"\n                            onclick=\"loadMesaModalData('" + m.numero + "=')\">\n                                Ver\n                            </button>\n                        </th>\n                    </tr>";
             });
+            newHtml += '</tbody>';
+            $("#tabla-pedidos").html(newHtml);
+        };
+        grillaHandler.prototype.loadMesaModalData = function (numero) {
+        };
+        grillaHandler.prototype.cambiarEstadoMesa = function (numero) {
         };
         return grillaHandler;
     }());
@@ -98,4 +136,10 @@ function initGrilla() {
 }
 function getPedidos() {
     grillaObj.getPedidos();
+}
+function loadMesaModalData(numero) {
+    grillaObj.loadMesaModalData(numero);
+}
+function cambiarEstadoMesa(numero) {
+    grillaObj.cambiarEstadoMesa(numero);
 }

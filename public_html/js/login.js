@@ -9,9 +9,9 @@ var laComanda;
         }
         login.prototype.doLogin = function () {
             if (this.validateLogin()) {
-                var username = $('#usr-txt').val();
-                var password_1 = $('#pass-txt').val();
-                this.server.login(username, password_1, function (rt) {
+                var username_1 = $('#usr-txt').val();
+                var password = $('#pass-txt').val();
+                this.server.login(username_1, password, function (rt) {
                     if (rt == 'user') {
                         $('#contraError').css('display', 'none');
                         $('#usuarioError').css('display', 'block');
@@ -20,12 +20,13 @@ var laComanda;
                         $('#usuarioError').css('display', 'none');
                         $('#contraError').css('display', 'block');
                     }
-                    else if (rt == 'ok') {
+                    else {
                         $('#usuarioError').css('display', 'none');
                         $('#contraError').css('display', 'none');
+                        localStorage.setItem('tipoUser', rt);
+                        localStorage.setItem('username', username_1);
+                        $(location).attr('href', './index.html');
                     }
-                    localStorage.setItem('user', password_1);
-                    $(location).attr('href', './index.html');
                 });
             }
         };
@@ -51,7 +52,7 @@ var laComanda;
         };
         login.prototype.setTestValue = function (value) {
             $('#usr-txt').val(value);
-            $('#pass-txt').val(value);
+            $('#pass-txt').val(value.substring(0, value.length - 1));
         };
         return login;
     }());

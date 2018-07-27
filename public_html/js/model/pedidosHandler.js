@@ -67,6 +67,7 @@ var laComanda;
             this.estado = 'Pendiente';
             this.pedidoId = '';
             this.index = 0;
+            this.tomadoPor = '';
         }
         elemento.parse = function (json) {
             var el;
@@ -79,4 +80,37 @@ var laComanda;
         return elemento;
     }());
     laComanda.elemento = elemento;
+    var lasMesas = /** @class */ (function () {
+        function lasMesas() {
+            this.mesas = new Array();
+            this.mesas.push(new mesa('1'));
+            this.mesas.push(new mesa('2'));
+            this.mesas.push(new mesa('3'));
+            this.mesas.push(new mesa('4'));
+            this.mesas.push(new mesa('5'));
+        }
+        lasMesas.parse = function (json) {
+            var lm = new lasMesas();
+            lm.mesas = new Array();
+            json['mesas'].forEach(function (mes) {
+                lm.mesas.push(mesa.parse(mes));
+            });
+            return lm;
+        };
+        return lasMesas;
+    }());
+    laComanda.lasMesas = lasMesas;
+    var mesa = /** @class */ (function () {
+        function mesa(numero) {
+            this.numero = numero;
+            this.estado = 'Con cliente esperando pedido';
+        }
+        mesa.parse = function (json) {
+            var mes = new mesa(json['numero']);
+            mes.estado = json['estado'];
+            return mes;
+        };
+        return mesa;
+    }());
+    laComanda.mesa = mesa;
 })(laComanda || (laComanda = {}));

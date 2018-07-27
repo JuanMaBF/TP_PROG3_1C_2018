@@ -25,15 +25,32 @@ var laComanda;
             };
             this.connection(data, callback);
         };
+        server.prototype.getMesas = function (callback) {
+            var data = {
+                "action": "getMesas"
+            };
+            this.connection(data, callback);
+        };
+        server.prototype.setMesas = function (mesas, callback) {
+            var data = {
+                "action": "setMesas",
+                "mesas": mesas
+            };
+            this.connection(data, callback);
+        };
         server.prototype.connection = function (data, callback) {
-            $("#spinner-modal").modal('toggle');
+            if (data.action != "getMesas" && data.action != "setMesas") {
+                $("#spinner-modal").modal('toggle');
+            }
             $.ajax({
                 url: "./php/server.php",
                 type: "post",
                 data: data,
                 success: function (response) {
                     setTimeout(function () {
-                        $("#spinner-modal").modal('toggle');
+                        if (data.action != "getMesas" && data.action != "setMesas") {
+                            $("#spinner-modal").modal('toggle');
+                        }
                         callback(response);
                     }, 500);
                 },

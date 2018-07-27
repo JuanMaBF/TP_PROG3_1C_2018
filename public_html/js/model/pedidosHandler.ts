@@ -78,6 +78,7 @@ namespace laComanda {
         public estado: string;
         public pedidoId: string;
         public index: number;
+        public tomadoPor: string;
 
         public constructor(nombre: string, cantidad: number) {
             this.nombre = nombre;
@@ -85,6 +86,7 @@ namespace laComanda {
             this.estado = 'Pendiente';
             this.pedidoId = '';
             this.index = 0
+            this.tomadoPor = '';
         }
 
         public static parse(json: any): elemento {
@@ -96,4 +98,45 @@ namespace laComanda {
             return el;
         }
     }
+
+    export class lasMesas {
+        public mesas: Array<mesa>;
+
+        constructor() {
+            this.mesas = new Array<mesa>();
+            this.mesas.push(new mesa('1'));
+            this.mesas.push(new mesa('2'));
+            this.mesas.push(new mesa('3'));
+            this.mesas.push(new mesa('4'));
+            this.mesas.push(new mesa('5'));
+        }
+
+        public static parse(json: any): lasMesas {
+            let lm = new lasMesas();
+            lm.mesas = new Array<mesa>();
+            json['mesas'].forEach((mes: any) => {
+                lm.mesas.push(mesa.parse(mes));
+            });
+            return lm;
+        }
+
+    }
+
+    export class mesa {
+        public numero: string;
+        public estado: string;
+
+        constructor(numero: string) {
+            this.numero = numero;
+            this.estado = 'Con cliente esperando pedido';
+        }
+
+        public static parse(json: any): mesa {
+            let mes = new mesa(json['numero']);
+            mes.estado = json['estado']
+            return mes;
+        }
+
+    }
+
 }

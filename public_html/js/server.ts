@@ -27,15 +27,34 @@ namespace laComanda {
             this.connection(data, callback);
         }
 
+        public getMesas(callback: Function) {
+            let data = {
+                "action": "getMesas"
+            };
+            this.connection(data, callback);
+        }
+
+        public setMesas(mesas: any, callback: Function) {
+            let data = {
+                "action": "setMesas",
+                "mesas": mesas
+            }
+            this.connection(data, callback);
+        }
+
         private connection(data: any, callback: Function): void {
-            $("#spinner-modal").modal('toggle');
+            if(data.action != "getMesas" && data.action != "setMesas") {
+                $("#spinner-modal").modal('toggle');
+            }
             $.ajax({
                 url: "./php/server.php",
                 type: "post",
                 data: data,
                 success: (response) => {
                     setTimeout(() => {
-                        $("#spinner-modal").modal('toggle');
+                        if(data.action != "getMesas" && data.action != "setMesas") {
+                            $("#spinner-modal").modal('toggle');
+                        }
                         callback(response);
                     }, 500);
                 },
