@@ -48,6 +48,7 @@ namespace laComanda {
         public estado: string;
         public precio: number;
         public elementos: Array<elemento>;
+        public puntos: any;
 
         public constructor(id: string, numeroMesa: number, nombreCliente: string, estado: string, precio: number, elementos?: Array<elemento> ) {
             this.id = id;
@@ -70,6 +71,7 @@ namespace laComanda {
                 elementos.push(elemento.parse(el));
             });
             ped = new pedido(id, numeroMesa, nombreCliente, estado, precio, elementos);
+            ped.puntos = json['puntos'];
             elementos.forEach(el => el.pedidoId = id);
             return ped;
         }

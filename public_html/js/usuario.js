@@ -66,11 +66,31 @@ var laComanda;
                 _this.pedidosHand = laComanda.pedidosHandler.parse(JSON.parse(ped));
                 if (callback != undefined) {
                     callback(_this.currentPedido);
+                    if (_this.pedidosHand.pedidos.filter(function (p) { return p.id == _this.currentPedido; })[0].estado == "Cerrado") {
+                        _this.showParte("3");
+                    }
                 }
             });
         };
         usuario.prototype.actualizar = function () {
             this.getPedidos(this.mostrarPedido.bind(this));
+        };
+        usuario.prototype.subirEncuesta = function () {
+            var _this = this;
+            var puntMesa = $("#puntMesa").val();
+            var puntRestaurante = $("#puntRestaurante").val();
+            var puntCocinero = $("#puntCocinero").val();
+            var puntMozo = $("#puntMozo").val();
+            var puntos = {
+                "puntMesa": puntMesa,
+                "puntRestaurante": puntRestaurante,
+                "puntCocinero": puntCocinero,
+                "puntMozo": puntMozo,
+            };
+            this.pedidosHand.pedidos.filter(function (p) { return p.id == _this.currentPedido; })[0].puntos = puntos;
+            this.server.setPedidos(JSON.stringify(this.pedidosHand), function (rt) { });
+            alert("Gracias! Vuelva prontoS");
+            $(location).attr('href', './usuario.html');
         };
         return usuario;
     }());
@@ -85,4 +105,7 @@ function validateDatosMesa() {
 }
 function actualizar() {
     usrObj.actualizar();
+}
+function subirEncuesta() {
+    usrObj.subirEncuesta();
 }

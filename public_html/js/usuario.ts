@@ -79,12 +79,32 @@ namespace laComanda {
                 this.pedidosHand = pedidosHandler.parse(JSON.parse(ped));
                 if(callback != undefined) {
                     callback(this.currentPedido);
+                    if(this.pedidosHand.pedidos.filter(p => p.id == this.currentPedido)[0].estado == "Cerrado") {
+                        this.showParte("3");
+                    }
                 }
             });
         }
 
-        public actualizar() {
+        public actualizar(): void {
             this.getPedidos(this.mostrarPedido.bind(this));
+        }
+
+        public subirEncuesta(): void {
+            let puntMesa = $("#puntMesa").val();
+            let puntRestaurante = $("#puntRestaurante").val();
+            let puntCocinero = $("#puntCocinero").val();
+            let puntMozo = $("#puntMozo").val();
+            let puntos = {
+                "puntMesa": puntMesa,
+                "puntRestaurante": puntRestaurante,
+                "puntCocinero": puntCocinero,
+                "puntMozo": puntMozo,
+            };
+            this.pedidosHand.pedidos.filter(p => p.id == this.currentPedido)[0].puntos = puntos;
+            this.server.setPedidos(JSON.stringify(this.pedidosHand), (rt: any) => {});
+            alert("Gracias! Vuelva prontoS");
+            $(location).attr('href', './usuario.html');
         }
 
     }
@@ -102,4 +122,8 @@ function validateDatosMesa() {
 
 function actualizar() {
     usrObj.actualizar();
+}
+
+function subirEncuesta() {
+    usrObj.subirEncuesta();
 }

@@ -1,1 +1,1 @@
-{"mesas":[{"numero":"1","estado":"Con clientes pagando"},{"numero":"2","estado":"Con cliente esperando pedido"},{"numero":"3","estado":"Con cliente esperando pedido"},{"numero":"4","estado":"Con cliente esperando pedido"},{"numero":"5","estado":"Con cliente esperando pedido"}]}
+{"mesas":[{"numero":"1","estado":"Con clientes pagando"},{"numero":"2","estado":"Cerrada"},{"numero":"3","estado":"Cerrada"},{"numero":"4","estado":"Con cliente esperando pedido"},{"numero":"5","estado":"Con cliente esperando pedido"}]}

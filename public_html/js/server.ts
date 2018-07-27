@@ -43,7 +43,7 @@ namespace laComanda {
         }
 
         private connection(data: any, callback: Function): void {
-            if(data.action != "getMesas" && data.action != "setMesas") {
+            if(data.action != "getMesas" && data.action != "setMesas" && data.action != "setPedidos") {
                 $("#spinner-modal").modal('toggle');
             }
             $.ajax({
@@ -52,7 +52,7 @@ namespace laComanda {
                 data: data,
                 success: (response) => {
                     setTimeout(() => {
-                        if(data.action != "getMesas" && data.action != "setMesas") {
+                        if(data.action != "getMesas" && data.action != "setMesas" && data.action != "setPedidos") {
                             $("#spinner-modal").modal('toggle');
                         }
                         callback(response);

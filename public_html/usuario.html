@@ -27,7 +27,7 @@
             <section class="form-login">
                 <div class="card mt-5">
                     <div class="card-header">
-                        <h3>Ingrese sus datos</h3>
+                        <h3>Usuario</h3>
                     </div>
                     <div class="card-body" id="card-parte-1">
                         <form action="#">
@@ -52,8 +52,6 @@
                                 <span id="mensaje-login"></span> 
                             </div>
                             <input type="button" class="btn btn-lg btn-primary btn-block" value="Ingresar" onclick="validateDatosMesa()" />  
-                            
-                            
                         </form>
                     </div>
                     <div class="card-body" id="card-parte-2" style="display: none">
@@ -74,7 +72,73 @@
                         </table>
                     </div>
                     <div class="card-body" id="card-parte-3" style="display: none">
+                        <h3>Por favor complete esta breve encuesta</h3>
+                        <form action="#">
+                            <div class="input-group" id="input-group-mail">
+                                <label>Puntuacion de la mesa</label>
+                                <select required class="form-control" id="puntMesa">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                    <option>8</option>
+                                    <option>9</option>
+                                    <option>10</option>
+                                </select>
+                            </div>
 
+                            <div class="input-group" id="input-group-mail">
+                                <label>Puntuacion del restaurante</label>
+                                <select required class="form-control" id="puntRestaurante">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                    <option>8</option>
+                                    <option>9</option>
+                                    <option>10</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group" id="input-group-mail">
+                                <label>Puntuacion del cocinero</label>
+                                <select required class="form-control" id="puntCocinero">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                    <option>8</option>
+                                    <option>9</option>
+                                    <option>10</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group" id="input-group-mail">
+                                <label>Puntuacion del mozo</label>
+                                <select required class="form-control" id="puntMozo">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                    <option>8</option>
+                                    <option>9</option>
+                                    <option>10</option>
+                                </select>
+                            </div>
+                            <input type="button" class="btn btn-lg btn-primary btn-block" value="Enviar" onclick="subirEncuesta()" />  
+                        </form>
                     </div>
                 </div>
                                 

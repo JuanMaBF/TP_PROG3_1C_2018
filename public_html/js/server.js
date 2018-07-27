@@ -39,7 +39,7 @@ var laComanda;
             this.connection(data, callback);
         };
         server.prototype.connection = function (data, callback) {
-            if (data.action != "getMesas" && data.action != "setMesas") {
+            if (data.action != "getMesas" && data.action != "setMesas" && data.action != "setPedidos") {
                 $("#spinner-modal").modal('toggle');
             }
             $.ajax({
@@ -48,7 +48,7 @@ var laComanda;
                 data: data,
                 success: function (response) {
                     setTimeout(function () {
-                        if (data.action != "getMesas" && data.action != "setMesas") {
+                        if (data.action != "getMesas" && data.action != "setMesas" && data.action != "setPedidos") {
                             $("#spinner-modal").modal('toggle');
                         }
                         callback(response);

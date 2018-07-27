@@ -57,6 +57,7 @@ var laComanda;
                 elementos.push(elemento.parse(el));
             });
             ped = new pedido(id, numeroMesa, nombreCliente, estado, precio, elementos);
+            ped.puntos = json['puntos'];
             elementos.forEach(function (el) { return el.pedidoId = id; });
             return ped;
         };
