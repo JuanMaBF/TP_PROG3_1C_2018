@@ -9,10 +9,12 @@ namespace laComanda {
 
         private server: server;
         private pedidosHand: pedidosHandler;
+        private currentPedido: string;
 
         constructor() {
             this.server = new server();
             this.pedidosHand = new pedidosHandler();
+            this.currentPedido = '';
             this.getPedidos();
         }
 
@@ -34,8 +36,13 @@ namespace laComanda {
             if(numeroMesa != "" && codigo != "") {
                 if(this.pedidosHand.pedidos.some(p => p.numeroMesa.toString() == numeroMesa && p.id == codigo)) {
                     this.mostrarPedido(codigo);
+                    this.currentPedido = codigo;
                     this.showParte("2");
+                } else {
+                    alert("Informacion incorrecta. Chequee sus datos o consulte con el mozo");   
                 }
+            } else {
+                alert("Informacion incorrecta. Chequee sus datos o consulte con el mozo");
             }
         }
 
@@ -57,7 +64,8 @@ namespace laComanda {
             let d = new Date();
             let minutos = d.getMinutes() + (d.getHours()*60);
             let minutosEl = e.minutos + (e.hora*60);
-            let dif = minutos - minutosEl;
+            let tiempoTranscurrido = minutos - minutosEl;
+            let dif = parseInt(e.tiempoEstimado) - tiempoTranscurrido;
             let horasFal = 0;
             while(dif > 59) {
                 horasFal++;
@@ -66,10 +74,17 @@ namespace laComanda {
             return "Faltan "+horasFal+" horas y "+dif+" minutos";
         }
 
-        private getPedidos() {
+        private getPedidos(callback?: Function) {
             this.server.getPedidos((ped: string) => { 
                 this.pedidosHand = pedidosHandler.parse(JSON.parse(ped));
+                if(callback != undefined) {
+                    callback(this.currentPedido);
+                }
             });
+        }
+
+        public actualizar() {
+            this.getPedidos(this.mostrarPedido.bind(this));
         }
 
     }
@@ -85,4 +100,6 @@ function validateDatosMesa() {
     usrObj.validateDatosMesa();
 }
 
-//
+function actualizar() {
+    usrObj.actualizar();
+}

@@ -8,6 +8,7 @@ var laComanda;
         function usuario() {
             this.server = new laComanda.server();
             this.pedidosHand = new laComanda.pedidosHandler();
+            this.currentPedido = '';
             this.getPedidos();
         }
         usuario.prototype.showParte = function (numero) {
@@ -27,8 +28,15 @@ var laComanda;
             if (numeroMesa != "" && codigo != "") {
                 if (this.pedidosHand.pedidos.some(function (p) { return p.numeroMesa.toString() == numeroMesa && p.id == codigo; })) {
                     this.mostrarPedido(codigo);
+                    this.currentPedido = codigo;
                     this.showParte("2");
                 }
+                else {
+                    alert("Informacion incorrecta. Chequee sus datos o consulte con el mozo");
+                }
+            }
+            else {
+                alert("Informacion incorrecta. Chequee sus datos o consulte con el mozo");
             }
         };
         usuario.prototype.mostrarPedido = function (codigo) {
@@ -43,7 +51,8 @@ var laComanda;
             var d = new Date();
             var minutos = d.getMinutes() + (d.getHours() * 60);
             var minutosEl = e.minutos + (e.hora * 60);
-            var dif = minutos - minutosEl;
+            var tiempoTranscurrido = minutos - minutosEl;
+            var dif = parseInt(e.tiempoEstimado) - tiempoTranscurrido;
             var horasFal = 0;
             while (dif > 59) {
                 horasFal++;
@@ -51,11 +60,17 @@ var laComanda;
             }
             return "Faltan " + horasFal + " horas y " + dif + " minutos";
         };
-        usuario.prototype.getPedidos = function () {
+        usuario.prototype.getPedidos = function (callback) {
             var _this = this;
             this.server.getPedidos(function (ped) {
                 _this.pedidosHand = laComanda.pedidosHandler.parse(JSON.parse(ped));
+                if (callback != undefined) {
+                    callback(_this.currentPedido);
+                }
             });
+        };
+        usuario.prototype.actualizar = function () {
+            this.getPedidos(this.mostrarPedido.bind(this));
         };
         return usuario;
     }());
@@ -67,4 +82,7 @@ window.onload = function () {
 };
 function validateDatosMesa() {
     usrObj.validateDatosMesa();
+}
+function actualizar() {
+    usrObj.actualizar();
 }
