@@ -1,6 +1,7 @@
 "use strict";
 ///<reference path="../node_modules/@types/jquery/index.d.ts"/>
 ///<reference path="./model/pedidosHandler.ts"/>
+///<reference path="./model/grillaHandler.ts"/>
 ///<reference path="./server.ts"/>
 var laComanda;
 (function (laComanda) {
@@ -160,10 +161,10 @@ var laComanda;
     laComanda.pedidosLoader = pedidosLoader;
 })(laComanda || (laComanda = {}));
 var plObj;
-var loginObj;
+var grillaObj;
 window.onload = function () {
     plObj = new laComanda.pedidosLoader();
-    loginObj = new laComanda.login();
+    grillaObj = new laComanda.grillaHandler();
 };
 function setPrecio() {
     plObj.setPrecio();

@@ -1,3 +1,7 @@
+"use strict";
+///<reference path="../node_modules/@types/jquery/index.d.ts"/>
+///<reference path="./server.ts"/>
+
 namespace laComanda {
     export class login {
 
@@ -22,8 +26,8 @@ namespace laComanda {
                         $('#usuarioError').css('display', 'none');
                         $('#contraError').css('display', 'none');
                     }
-                    console.log(rt);
-                    //localStorage.setItem('testObject', JSON.stringify(testObject));
+                    localStorage.setItem('user', password);
+                    $(location).attr('href', './index.html');
                 });
             }
         }
@@ -47,9 +51,24 @@ namespace laComanda {
             return isValid;
         }
 
+        public setTestValue(value: any): void {
+            $('#usr-txt').val(value);
+            $('#pass-txt').val(value);
+        }
+
     }
 }
 
+var loginObj: laComanda.login;
+
+window.onload = function() {
+    loginObj = new laComanda.login();
+};
+
 function doLogin() {
     loginObj.doLogin();
+}
+
+function setTestValue(value: string) {
+    loginObj.setTestValue(value);
 }

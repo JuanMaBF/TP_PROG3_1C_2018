@@ -1,6 +1,7 @@
 "use strict";
 ///<reference path="../node_modules/@types/jquery/index.d.ts"/>
 ///<reference path="./model/pedidosHandler.ts"/>
+///<reference path="./model/grillaHandler.ts"/>
 ///<reference path="./server.ts"/>
 
 namespace laComanda {
@@ -171,11 +172,11 @@ namespace laComanda {
 }
 
 var plObj: laComanda.pedidosLoader;
-var loginObj: laComanda.login;
+var grillaObj: laComanda.grillaHandler;
 
 window.onload = function() {
     plObj = new laComanda.pedidosLoader();
-    loginObj = new laComanda.login();
+    grillaObj = new laComanda.grillaHandler();
 };
 
 function setPrecio() {
