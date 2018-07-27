@@ -32,6 +32,9 @@ namespace laComanda {
         }
 
         public initGrilla() {
+            if(this.tipoUsuario != "socio") {
+                $("#monery-btn").css("display", "none");
+            }
             if(this.tipoUsuario == 'mozo' || this.tipoUsuario == 'socio') {
                 $('#agregar-pedido-btn').css('display', 'block');
                 $('#select-filter').css('display', 'none');
@@ -264,6 +267,40 @@ namespace laComanda {
             return precioUnidad*cantidad;
         }
 
+        public cargarTotales() {
+            let newHtml = '';
+            let total = 0;
+            this.pedidosHand.pedidos
+            .filter(p => p.estado == "Cerrado")
+            .forEach(p => {
+                let precioTotal = 0;
+                p.elementos.forEach(e => precioTotal += this.getPrecioElemento(e.nombre, e.cantidad));
+                total += precioTotal;
+                newHtml += `
+                <table id="tabla-modal" class="table mt-3">
+                <h3>Pedido `+p.id+` ($`+precioTotal+`)</h3>
+                <thead>
+                    <tr>
+                        <th scope="col">Pedido</th>
+                        <th scope="col">Precio</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+                p.elementos.forEach(e => {
+                    newHtml += `
+                        <tr>
+                            <th>`+e.nombre+` (`+e.cantidad+`)</th>
+                            <th>$`+this.getPrecioElemento(e.nombre, e.cantidad)+`</th>
+                        </tr>`
+                });
+                newHtml += '</tbody>';
+            });
+            newHtml += '</table>';
+            newHtml += 'Total recaudado: $'+total;
+            $("#modal-total").html(newHtml);
+        }
+
     }
 }
 
@@ -285,4 +322,8 @@ function loadMesaModalData(numero: string) {
 
 function cambiarEstadoMesa(numero: string) {
     grillaObj.cambiarEstadoMesa(numero);
+}
+
+function cargarTotales() {
+    grillaObj.cargarTotales();
 }

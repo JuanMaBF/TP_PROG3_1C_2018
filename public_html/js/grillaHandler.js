@@ -25,6 +25,9 @@ var laComanda;
         };
         grillaHandler.prototype.initGrilla = function () {
             var _this = this;
+            if (this.tipoUsuario != "socio") {
+                $("#monery-btn").css("display", "none");
+            }
             if (this.tipoUsuario == 'mozo' || this.tipoUsuario == 'socio') {
                 $('#agregar-pedido-btn').css('display', 'block');
                 $('#select-filter').css('display', 'none');
@@ -193,6 +196,26 @@ var laComanda;
             }
             return precioUnidad * cantidad;
         };
+        grillaHandler.prototype.cargarTotales = function () {
+            var _this = this;
+            var newHtml = '';
+            var total = 0;
+            this.pedidosHand.pedidos
+                .filter(function (p) { return p.estado == "Cerrado"; })
+                .forEach(function (p) {
+                var precioTotal = 0;
+                p.elementos.forEach(function (e) { return precioTotal += _this.getPrecioElemento(e.nombre, e.cantidad); });
+                total += precioTotal;
+                newHtml += "\n                <table id=\"tabla-modal\" class=\"table mt-3\">\n                <h3>Pedido " + p.id + " ($" + precioTotal + ")</h3>\n                <thead>\n                    <tr>\n                        <th scope=\"col\">Pedido</th>\n                        <th scope=\"col\">Precio</th>\n                    </tr>\n                </thead>\n                <tbody>";
+                p.elementos.forEach(function (e) {
+                    newHtml += "\n                        <tr>\n                            <th>" + e.nombre + " (" + e.cantidad + ")</th>\n                            <th>$" + _this.getPrecioElemento(e.nombre, e.cantidad) + "</th>\n                        </tr>";
+                });
+                newHtml += '</tbody>';
+            });
+            newHtml += '</table>';
+            newHtml += 'Total recaudado: $' + total;
+            $("#modal-total").html(newHtml);
+        };
         return grillaHandler;
     }());
     laComanda.grillaHandler = grillaHandler;
@@ -211,4 +234,7 @@ function loadMesaModalData(numero) {
 }
 function cambiarEstadoMesa(numero) {
     grillaObj.cambiarEstadoMesa(numero);
+}
+function cargarTotales() {
+    grillaObj.cargarTotales();
 }
