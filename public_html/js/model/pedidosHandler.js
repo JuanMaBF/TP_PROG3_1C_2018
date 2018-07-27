@@ -7,13 +7,18 @@ var laComanda;
         }
         pedidosHandler.prototype.agregarPedido = function (numeroMesa, nombreCliente, precio, elementos) {
             var id = '';
-            var caracteres = this.pedidos.length.toString().length;
-            for (var i = 0; i < 5 - caracteres; i++) {
-                id = id + '0';
+            if (this != null) {
+                var caracteres = this.pedidos.length.toString().length;
+                for (var i = 0; i < 5 - caracteres; i++) {
+                    id = id + '0';
+                }
+                id += this.pedidos.length.toString();
+                var newPedido = new pedido(id, numeroMesa, nombreCliente, 'Pendiente', precio, elementos);
+                if (elementos != null) {
+                    elementos.forEach(function (el) { return el.pedidoId = id; });
+                }
+                this.pedidos.push(newPedido);
             }
-            id += this.pedidos.length.toString();
-            var newPedido = new pedido(id, numeroMesa, nombreCliente, 'Pendiente', precio, elementos);
-            this.pedidos.push(newPedido);
         };
         pedidosHandler.parse = function (json) {
             var pedHan;
@@ -49,6 +54,7 @@ var laComanda;
                 elementos.push(elemento.parse(el));
             });
             ped = new pedido(id, numeroMesa, nombreCliente, estado, precio, elementos);
+            elementos.forEach(function (el) { return el.pedidoId = id; });
             return ped;
         };
         return pedido;
@@ -59,6 +65,8 @@ var laComanda;
             this.nombre = nombre;
             this.cantidad = cantidad;
             this.estado = 'Pendiente';
+            this.pedidoId = '';
+            this.index = 0;
         }
         elemento.parse = function (json) {
             var el;

@@ -15,12 +15,12 @@ namespace laComanda {
             this.pedidosHand = new pedidosHandler();
             this.tipoUsuario = localStorage.getItem('user') as string;
             this.getPedidos();
-            this.initGrilla();
         }
 
         private getPedidos() {
             this.server.getPedidos((ped: string) => { 
                 this.pedidosHand = pedidosHandler.parse(JSON.parse(ped));
+                this.initGrilla();
             });
         }
 
@@ -31,8 +31,8 @@ namespace laComanda {
                 if(this.tipoUsuario == 'bartender' || this.tipoUsuario == 'cerveceros') {
                     $('.cocina-only').css('display', 'none');
                 }
-                this.loadGrillaCocineros();
             }
+            this.reloadGrilla();
         }
 
         public reloadGrilla(): void {
@@ -44,7 +44,14 @@ namespace laComanda {
         }
 
         public loadGrillaCocineros(): void {
-            let elementos = this.getFiltredElementos().filter(e => e.estado != 'Terminado');
+            let filter = $("#select-filter").val();
+            let elementos = this.getFiltredElementos();
+            if(filter == "Activos") {
+                elementos = elementos.filter(e => e.estado != "Terminado");
+            } else if (filter != "Todos") {
+                elementos = elementos.filter(e => e.estado == filter);
+            }
+            
             let newHtml = `
                 <thead>
                     <tr>
@@ -64,7 +71,8 @@ namespace laComanda {
                         <td>` + el.nombre + `</td>
                         <td>` + el.cantidad + `</td>
                         <td>
-                            <select class="form-control">
+                            <select id="select-`+el.pedidoId+`-`+el.index+`" class="form-control" 
+                            onchange="updateEstado('`+el.pedidoId+`', `+el.index+`)">
                                 <option `+pendienteSel+`>Pendiente</option>
                                 <option `+preparacionSel+` class="enPreparacion">En preparación</option>
                                 <option `+listoSel+`>Listo para servir</option>
@@ -98,11 +106,29 @@ namespace laComanda {
             }
             this.pedidosHand.pedidos.forEach(ped => {
                 ped.elementos.filter(el => listaNombres.indexOf(el.nombre) > -1).forEach(e => {
+                    e.index = ped.elementos.indexOf(e);
                     elementosList.push(e);
                 });
             });
             return elementosList;
         }
 
+        public updateEstado(id: string, index: number) {
+            let newEstado = $("#select-"+id+"-"+index).val() as string;
+            this.pedidosHand.pedidos.filter(p => p.id == id)[0].elementos[index].estado = newEstado;
+            console.log(newEstado);
+            this.server.setPedidos(JSON.stringify(this.pedidosHand), () => {
+                this.reloadGrilla();
+            });
+        }
+
     }
+}
+
+function updateEstado(id: string, index: number) {
+    grillaObj.updateEstado(id, index);
+}
+
+function reloadGrilla() {
+    grillaObj.reloadGrilla();
 }

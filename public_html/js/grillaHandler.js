@@ -10,12 +10,12 @@ var laComanda;
             this.pedidosHand = new laComanda.pedidosHandler();
             this.tipoUsuario = localStorage.getItem('user');
             this.getPedidos();
-            this.initGrilla();
         }
         grillaHandler.prototype.getPedidos = function () {
             var _this = this;
             this.server.getPedidos(function (ped) {
                 _this.pedidosHand = laComanda.pedidosHandler.parse(JSON.parse(ped));
+                _this.initGrilla();
             });
         };
         grillaHandler.prototype.initGrilla = function () {
@@ -26,8 +26,8 @@ var laComanda;
                 if (this.tipoUsuario == 'bartender' || this.tipoUsuario == 'cerveceros') {
                     $('.cocina-only').css('display', 'none');
                 }
-                this.loadGrillaCocineros();
             }
+            this.reloadGrilla();
         };
         grillaHandler.prototype.reloadGrilla = function () {
             if (this.tipoUsuario == 'mozo' || this.tipoUsuario == 'socio') {
@@ -37,14 +37,21 @@ var laComanda;
             }
         };
         grillaHandler.prototype.loadGrillaCocineros = function () {
-            var elementos = this.getFiltredElementos().filter(function (e) { return e.estado != 'Terminado'; });
+            var filter = $("#select-filter").val();
+            var elementos = this.getFiltredElementos();
+            if (filter == "Activos") {
+                elementos = elementos.filter(function (e) { return e.estado != "Terminado"; });
+            }
+            else if (filter != "Todos") {
+                elementos = elementos.filter(function (e) { return e.estado == filter; });
+            }
             var newHtml = "\n                <thead>\n                    <tr>\n                    <th scope=\"col\">Pedido</th>\n                    <th scope=\"col\">Cantidad</th>\n                    <th scope=\"col\">Estado</th>\n                    </tr>\n                </thead>\n                <tbody>";
             elementos.forEach(function (el) {
                 var pendienteSel = el.estado == "Pendiente" ? 'selected' : '';
                 var preparacionSel = el.estado == "En preparación" ? 'selected' : '';
                 var listoSel = el.estado == "Listo para servir" ? 'selected' : '';
                 var terminasoSel = el.estado == "Terminado" ? 'selected' : '';
-                newHtml += "\n                    <tr>\n                        <td>" + el.nombre + "</td>\n                        <td>" + el.cantidad + "</td>\n                        <td>\n                            <select class=\"form-control\">\n                                <option " + pendienteSel + ">Pendiente</option>\n                                <option " + preparacionSel + " class=\"enPreparacion\">En preparaci\u00F3n</option>\n                                <option " + listoSel + ">Listo para servir</option>\n                                <option " + terminasoSel + ">Terminado</option>\n                            </select>\n                        </td>\n                    </tr>";
+                newHtml += "\n                    <tr>\n                        <td>" + el.nombre + "</td>\n                        <td>" + el.cantidad + "</td>\n                        <td>\n                            <select id=\"select-" + el.pedidoId + "-" + el.index + "\" class=\"form-control\" \n                            onchange=\"updateEstado('" + el.pedidoId + "', " + el.index + ")\">\n                                <option " + pendienteSel + ">Pendiente</option>\n                                <option " + preparacionSel + " class=\"enPreparacion\">En preparaci\u00F3n</option>\n                                <option " + listoSel + ">Listo para servir</option>\n                                <option " + terminasoSel + ">Terminado</option>\n                            </select>\n                        </td>\n                    </tr>";
             });
             newHtml += "</tbody>";
             $("#tabla-pedidos").html(newHtml);
@@ -73,12 +80,28 @@ var laComanda;
             }
             this.pedidosHand.pedidos.forEach(function (ped) {
                 ped.elementos.filter(function (el) { return listaNombres.indexOf(el.nombre) > -1; }).forEach(function (e) {
+                    e.index = ped.elementos.indexOf(e);
                     elementosList.push(e);
                 });
             });
             return elementosList;
         };
+        grillaHandler.prototype.updateEstado = function (id, index) {
+            var _this = this;
+            var newEstado = $("#select-" + id + "-" + index).val();
+            this.pedidosHand.pedidos.filter(function (p) { return p.id == id; })[0].elementos[index].estado = newEstado;
+            console.log(newEstado);
+            this.server.setPedidos(JSON.stringify(this.pedidosHand), function () {
+                _this.reloadGrilla();
+            });
+        };
         return grillaHandler;
     }());
     laComanda.grillaHandler = grillaHandler;
 })(laComanda || (laComanda = {}));
+function updateEstado(id, index) {
+    grillaObj.updateEstado(id, index);
+}
+function reloadGrilla() {
+    grillaObj.reloadGrilla();
+}

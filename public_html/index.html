@@ -44,7 +44,7 @@
         -->
 
     <div class="row justify-content-center mt-5">
-        <div class="col col-11 col-md-8">
+        <div class="col col-12 col-md-8">
             <div class="card">
                 <div class="card-header">
                     <h3>Pedidos</h3>
@@ -56,16 +56,14 @@
                         </div>
                         <div class="btn-group" role="group">
                             <div class="btn-group" role="group">
-                                <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Filtrar
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                    <a class="dropdown-item cocina-only" href="#">Activos</a>
-                                    <a class="dropdown-item" href="#">Pendientes</a>
-                                    <a class="dropdown-item cocina-only" href="#">En preparación</a>
-                                    <a class="dropdown-item"  href="#">Listo para servir</a>
-                                    <a class="dropdown-item" href="#">Terminados</a>
-                                </div>
+                                <select required class="form-control" id="select-filter" onchange="reloadGrilla()">
+                                    <option>Activos</option>
+                                    <option value="Pendiente">Pendientes</option>
+                                    <option class="cocina-only">En preparación</option>
+                                    <option>Listo para servir</option>
+                                    <option value="Terminado">Terminados</option>
+                                    <option>Todos</option>
+                                </select>
                             </div>
                         </div>
                         <table id="tabla-pedidos" class="table mt-3">
@@ -76,29 +74,6 @@
                                 <th scope="col">Estado</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Pedido</td>
-                                    <td>Cantidad</td>
-                                    <td>
-                                        <select required class="form-control" id="select">
-                                            <option>Pendiente</option>
-                                            <option>Listo para servir</option>
-                                            <option>Terminado</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>@fat</td>
-                                </tr>
-                                <tr>
-                                    <td>Larry</td>
-                                    <td>the Bird</td>
-                                    <td>@twitter</td>
-                                </tr>
-                            </tbody>
                         </table>
                 </div>
             </div>

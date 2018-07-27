@@ -10,13 +10,18 @@ namespace laComanda {
 
         public agregarPedido(numeroMesa: number, nombreCliente: string, precio: number,  elementos?: Array<elemento> ): void {
             let id = '';
-            let caracteres = this.pedidos.length.toString().length;
-            for(let i = 0; i < 5-caracteres; i++) {
-                id = id + '0';
+            if(this != null) {            
+                let caracteres = this.pedidos.length.toString().length;
+                for(let i = 0; i < 5-caracteres; i++) {
+                    id = id + '0';
+                }
+                id += this.pedidos.length.toString();
+                let newPedido = new pedido(id, numeroMesa, nombreCliente, 'Pendiente', precio, elementos);
+                if(elementos != null) {
+                    elementos.forEach(el => el.pedidoId = id);
+                }
+                this.pedidos.push(newPedido);
             }
-            id += this.pedidos.length.toString();
-            let newPedido = new pedido(id, numeroMesa, nombreCliente, 'Pendiente', precio, elementos);
-            this.pedidos.push(newPedido);
         }
 
         public static parse(json: any): pedidosHandler {
@@ -61,6 +66,7 @@ namespace laComanda {
                 elementos.push(elemento.parse(el));
             });
             ped = new pedido(id, numeroMesa, nombreCliente, estado, precio, elementos);
+            elementos.forEach(el => el.pedidoId = id);
             return ped;
         }
 
@@ -70,11 +76,15 @@ namespace laComanda {
         public nombre: string;
         public cantidad: number;
         public estado: string;
+        public pedidoId: string;
+        public index: number;
 
         public constructor(nombre: string, cantidad: number) {
             this.nombre = nombre;
             this.cantidad = cantidad;
             this.estado = 'Pendiente';
+            this.pedidoId = '';
+            this.index = 0
         }
 
         public static parse(json: any): elemento {
