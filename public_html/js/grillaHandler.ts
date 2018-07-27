@@ -15,7 +15,10 @@ namespace laComanda {
         public constructor() {
             this.server = new server();
             this.tipoUsuario = localStorage.getItem('tipoUser') as string;
-            this.username = localStorage.getItem('tipoUser') as string;
+            this.username = localStorage.getItem('username') as string;
+            if(this.username == '') {
+                $(location).attr('href', './login.html');
+            }
             this.pedidosHand = new pedidosHandler();
             this.mesas = new lasMesas();
             this.getPedidos();
@@ -114,6 +117,14 @@ namespace laComanda {
         public updateEstado(id: string, index: number) {
             let newEstado = $("#select-"+id+"-"+index).val() as string;
             this.pedidosHand.pedidos.filter(p => p.id == id)[0].elementos[index].estado = newEstado;
+            if(newEstado == "En preparación") {
+                let tiempoEstimado: string;
+                do {
+                    tiempoEstimado = prompt("¿Cuantos minutos va a tardar?", "") as string;
+                    console.log(tiempoEstimado);
+                }while(!tiempoEstimado.match(/^-{0,1}\d+$/));
+                this.pedidosHand.pedidos.filter(p => p.id == id)[0].elementos[index].tiempoEstimado = tiempoEstimado;
+            }
             this.pedidosHand.pedidos.filter(p => p.id == id)[0].elementos[index].tomadoPor = this.username;
             this.updateEstadoPedido(this.pedidosHand.pedidos.filter(p => p.id == id)[0]);
             this.server.setPedidos(JSON.stringify(this.pedidosHand), () => {});
@@ -176,14 +187,29 @@ namespace laComanda {
 
         public cambiarEstadoMesa(numero: string): void {
             let newEstado = $("#estado-mesa-"+numero).val() as string;
-            this.mesas.mesas.filter(m => m.numero == numero)[0].estado = newEstado;
-            this.server.setMesas(JSON.stringify(this.mesas), () => {});
+            if(newEstado == "Cerrada" && this.tipoUsuario != "socio") {
+                alert('Solo los socios pueden cerrar la mesa');
+            } else {
+                this.mesas.mesas.filter(m => m.numero == numero)[0].estado = newEstado;
+                if(newEstado == "Cerrada") {
+                    this.pedidosHand.pedidos.filter(p => p.numeroMesa.toString() == numero).forEach(p => {
+                        p.estado = "Cerrado";
+                    });
+                    this.server.setPedidos(JSON.stringify(this.pedidosHand), () => {
+
+                    });
+                }
+                this.server.setMesas(JSON.stringify(this.mesas), () => {});
+            }
         }
 
         public loadMesaModalData(numero: string): void {
             let newHtml = '';
             let total = 0;
-            this.pedidosHand.pedidos.filter(p => p.numeroMesa.toString() == numero).forEach(p => {
+            this.pedidosHand.pedidos
+            .filter(p => p.numeroMesa.toString() == numero)
+            .filter(p => p.estado != "Cerrado")
+            .forEach(p => {
                 let precioTotal = 0;
                 p.elementos.forEach(e => precioTotal += this.getPrecioElemento(e.nombre, e.cantidad));
                 total += precioTotal;
@@ -201,6 +227,7 @@ namespace laComanda {
                 <tbody>`;
 
                 p.elementos.forEach(e => {
+                    console.log(e.tomadoPor);
                     newHtml += `
                         <tr>
                             <th>`+e.nombre+` (`+e.cantidad+`)</th>

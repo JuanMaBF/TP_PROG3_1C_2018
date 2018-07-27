@@ -79,6 +79,7 @@ namespace laComanda {
         public pedidoId: string;
         public index: number;
         public tomadoPor: string;
+        public tiempoEstimado: string;
 
         public constructor(nombre: string, cantidad: number) {
             this.nombre = nombre;
@@ -87,6 +88,7 @@ namespace laComanda {
             this.pedidoId = '';
             this.index = 0
             this.tomadoPor = '';
+            this.tiempoEstimado = '';
         }
 
         public static parse(json: any): elemento {
@@ -95,6 +97,8 @@ namespace laComanda {
             let cantidad = json['cantidad'] as number;
             el = new elemento(nombre, cantidad);
             el.estado = json['estado'] as string;
+            el.tomadoPor = json['tomadoPor'] as string;
+            el.tiempoEstimado = json['tiempoEstimado'] as string;
             return el;
         }
     }

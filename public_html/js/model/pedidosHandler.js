@@ -68,6 +68,7 @@ var laComanda;
             this.pedidoId = '';
             this.index = 0;
             this.tomadoPor = '';
+            this.tiempoEstimado = '';
         }
         elemento.parse = function (json) {
             var el;
@@ -75,6 +76,8 @@ var laComanda;
             var cantidad = json['cantidad'];
             el = new elemento(nombre, cantidad);
             el.estado = json['estado'];
+            el.tomadoPor = json['tomadoPor'];
+            el.tiempoEstimado = json['tiempoEstimado'];
             return el;
         };
         return elemento;

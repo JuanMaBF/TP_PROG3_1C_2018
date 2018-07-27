@@ -8,7 +8,10 @@ var laComanda;
         function grillaHandler() {
             this.server = new laComanda.server();
             this.tipoUsuario = localStorage.getItem('tipoUser');
-            this.username = localStorage.getItem('tipoUser');
+            this.username = localStorage.getItem('username');
+            if (this.username == '') {
+                $(location).attr('href', './login.html');
+            }
             this.pedidosHand = new laComanda.pedidosHandler();
             this.mesas = new laComanda.lasMesas();
             this.getPedidos();
@@ -87,6 +90,14 @@ var laComanda;
         grillaHandler.prototype.updateEstado = function (id, index) {
             var newEstado = $("#select-" + id + "-" + index).val();
             this.pedidosHand.pedidos.filter(function (p) { return p.id == id; })[0].elementos[index].estado = newEstado;
+            if (newEstado == "En preparación") {
+                var tiempoEstimado = void 0;
+                do {
+                    tiempoEstimado = prompt("¿Cuantos minutos va a tardar?", "");
+                    console.log(tiempoEstimado);
+                } while (!tiempoEstimado.match(/^-{0,1}\d+$/));
+                this.pedidosHand.pedidos.filter(function (p) { return p.id == id; })[0].elementos[index].tiempoEstimado = tiempoEstimado;
+            }
             this.pedidosHand.pedidos.filter(function (p) { return p.id == id; })[0].elementos[index].tomadoPor = this.username;
             this.updateEstadoPedido(this.pedidosHand.pedidos.filter(function (p) { return p.id == id; })[0]);
             this.server.setPedidos(JSON.stringify(this.pedidosHand), function () { });
@@ -123,19 +134,35 @@ var laComanda;
         };
         grillaHandler.prototype.cambiarEstadoMesa = function (numero) {
             var newEstado = $("#estado-mesa-" + numero).val();
-            this.mesas.mesas.filter(function (m) { return m.numero == numero; })[0].estado = newEstado;
-            this.server.setMesas(JSON.stringify(this.mesas), function () { });
+            if (newEstado == "Cerrada" && this.tipoUsuario != "socio") {
+                alert('Solo los socios pueden cerrar la mesa');
+            }
+            else {
+                this.mesas.mesas.filter(function (m) { return m.numero == numero; })[0].estado = newEstado;
+                if (newEstado == "Cerrada") {
+                    this.pedidosHand.pedidos.filter(function (p) { return p.numeroMesa.toString() == numero; }).forEach(function (p) {
+                        p.estado = "Cerrado";
+                    });
+                    this.server.setPedidos(JSON.stringify(this.pedidosHand), function () {
+                    });
+                }
+                this.server.setMesas(JSON.stringify(this.mesas), function () { });
+            }
         };
         grillaHandler.prototype.loadMesaModalData = function (numero) {
             var _this = this;
             var newHtml = '';
             var total = 0;
-            this.pedidosHand.pedidos.filter(function (p) { return p.numeroMesa.toString() == numero; }).forEach(function (p) {
+            this.pedidosHand.pedidos
+                .filter(function (p) { return p.numeroMesa.toString() == numero; })
+                .filter(function (p) { return p.estado != "Cerrado"; })
+                .forEach(function (p) {
                 var precioTotal = 0;
                 p.elementos.forEach(function (e) { return precioTotal += _this.getPrecioElemento(e.nombre, e.cantidad); });
                 total += precioTotal;
                 newHtml += "\n                <table id=\"tabla-modal\" class=\"table mt-3\">\n                <h3>Pedido " + p.id + " ($" + precioTotal + ")</h3>\n                <thead>\n                    <tr>\n                        <th scope=\"col\">Pedido</th>\n                        <th scope=\"col\">Estado</th>\n                        <th scope=\"col\">Tomado por</th>\n                        <th scope=\"col\">Precio</th>\n                    </tr>\n                </thead>\n                <tbody>";
                 p.elementos.forEach(function (e) {
+                    console.log(e.tomadoPor);
                     newHtml += "\n                        <tr>\n                            <th>" + e.nombre + " (" + e.cantidad + ")</th>\n                            <th>" + e.estado + "</th>\n                            <th>" + e.tomadoPor + "</th>\n                            <th>$" + _this.getPrecioElemento(e.nombre, e.cantidad) + "</th>\n                        </tr>";
                 });
                 newHtml += '</tbody>';

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/login.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="./js/server.js"></script>
+    <script src="./js/login.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Login - La comanda</title>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar navbar-fixed-top">
+            <h2>La comanda</h2>
+        </nav>
+    </header>
+
+    <div class="row justify-content-center">
+        <div class="col col-11 col-md-6">
+            <section class="form-login">
+                <div class="card mt-5">
+                    <div class="card-header">
+                        <h3>Ingrese sus datos</h3>
+                    </div>
+                    <div class="card-body" id="card-parte-1">
+                        <form action="#">
+                            <div class="input-group" id="input-group-mail">
+                                <label>Seleccione el numero de mesa</label>
+                                <select required class="form-control" id="numeroMesa">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                            </div>
+                            <br>
+                            <div class="input-group" id="input-group-pass">
+                                <label>Ingrese el codigo de su pedido</label> <br>
+                                <input id="pass-txt" type="password" class="form-control" name="pass" placeholder="Codigo de pedido">
+                                <div class="invalid-feedback" id="contraError">Contraseña incorrecta</div>
+                            </div>   
+                            <br>
+                            <div class="input-group" id="input-group-pass">
+                                <span id="mensaje-login"></span> 
+                            </div>
+                            <input type="button" class="btn btn-lg btn-primary btn-block" value="Ingresar" onclick="doLogin()" />  
+                            
+                            
+                        </form>
+                    </div>
+                </div>
+                                
+            </section>  
+        </div>     
+    </div>           
+
+    <!-- Modal -->
+    <div class="modal fade" id="spinner-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 235px;">
+            <div class="modal-content" >
+                <div class="modal-body">
+                    <img src="./img/spinner.gif">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
