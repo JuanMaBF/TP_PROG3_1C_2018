@@ -94,7 +94,6 @@ var laComanda;
                 var tiempoEstimado = void 0;
                 do {
                     tiempoEstimado = prompt("¿Cuantos minutos va a tardar?", "");
-                    console.log(tiempoEstimado);
                 } while (!tiempoEstimado.match(/^-{0,1}\d+$/));
                 this.pedidosHand.pedidos.filter(function (p) { return p.id == id; })[0].elementos[index].tiempoEstimado = tiempoEstimado;
             }
@@ -133,6 +132,7 @@ var laComanda;
             $("#tabla-pedidos").html(newHtml);
         };
         grillaHandler.prototype.cambiarEstadoMesa = function (numero) {
+            var _this = this;
             var newEstado = $("#estado-mesa-" + numero).val();
             if (newEstado == "Cerrada" && this.tipoUsuario != "socio") {
                 alert('Solo los socios pueden cerrar la mesa');
@@ -144,6 +144,7 @@ var laComanda;
                         p.estado = "Cerrado";
                     });
                     this.server.setPedidos(JSON.stringify(this.pedidosHand), function () {
+                        _this.getPedidos();
                     });
                 }
                 this.server.setMesas(JSON.stringify(this.mesas), function () { });

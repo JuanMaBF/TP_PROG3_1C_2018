@@ -8,6 +8,10 @@ namespace laComanda {
             this.pedidos = new Array<pedido>();
         }
 
+        public getNew(): pedidosHandler {
+            return new pedidosHandler();
+        }
+
         public agregarPedido(numeroMesa: number, nombreCliente: string, precio: number,  elementos?: Array<elemento> ): void {
             let id = '';
             if(this != null) {            
@@ -80,6 +84,8 @@ namespace laComanda {
         public index: number;
         public tomadoPor: string;
         public tiempoEstimado: string;
+        public hora: number;
+        public minutos: number;
 
         public constructor(nombre: string, cantidad: number) {
             this.nombre = nombre;
@@ -89,6 +95,8 @@ namespace laComanda {
             this.index = 0
             this.tomadoPor = '';
             this.tiempoEstimado = '';
+            this.hora = 0;
+            this.minutos = 0;
         }
 
         public static parse(json: any): elemento {
@@ -99,6 +107,8 @@ namespace laComanda {
             el.estado = json['estado'] as string;
             el.tomadoPor = json['tomadoPor'] as string;
             el.tiempoEstimado = json['tiempoEstimado'] as string;
+            el.hora = json['hora'] as number;
+            el.minutos = json['minutos'] as number;
             return el;
         }
     }

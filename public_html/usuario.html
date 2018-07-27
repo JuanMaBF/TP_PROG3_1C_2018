@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="./css/login.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="./js/server.js"></script>
-    <script src="./js/login.js"></script>
+    <script src="./js/model/pedidosHandler.js"></script>
+    <script src="./js/usuario.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -43,17 +44,34 @@
                             <br>
                             <div class="input-group" id="input-group-pass">
                                 <label>Ingrese el codigo de su pedido</label> <br>
-                                <input id="pass-txt" type="password" class="form-control" name="pass" placeholder="Codigo de pedido">
-                                <div class="invalid-feedback" id="contraError">Contraseña incorrecta</div>
+                                <input id="codigo-txt" type="text" class="form-control" name="pass" placeholder="Codigo de pedido">
+                                <div class="invalid-feedback" id="contraError">Codigo de pedido incorrecto</div>
                             </div>   
                             <br>
                             <div class="input-group" id="input-group-pass">
                                 <span id="mensaje-login"></span> 
                             </div>
-                            <input type="button" class="btn btn-lg btn-primary btn-block" value="Ingresar" onclick="doLogin()" />  
+                            <input type="button" class="btn btn-lg btn-primary btn-block" value="Ingresar" onclick="validateDatosMesa()" />  
                             
                             
                         </form>
+                    </div>
+                    <div class="card-body" id="card-parte-2" style="display: none">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                <th scope="col">Pedido</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Tiempo restante</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-pedidos">
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-body" id="card-parte-3" style="display: none">
+
                     </div>
                 </div>
                                 

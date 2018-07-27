@@ -89,6 +89,9 @@ var laComanda;
                     var cantidad = $('#num-' + index).val();
                     elementos.push(new laComanda.elemento(nombre, cantidad));
                     elementos[elementos.length - 1].tomadoPor = 'Sin tomar';
+                    var d = new Date();
+                    elementos[elementos.length - 1].hora = d.getHours();
+                    elementos[elementos.length - 1].minutos = d.getMinutes();
                 }
                 var nroMesa = $('#numeroMesa').val();
                 var nombreCliente = $('#nombreCliente').val();

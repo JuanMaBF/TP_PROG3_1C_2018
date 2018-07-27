@@ -100,6 +100,9 @@ namespace laComanda {
                     let cantidad = $('#num-'+index).val() as number;
                     elementos.push(new elemento(nombre, cantidad));
                     elementos[elementos.length-1].tomadoPor = 'Sin tomar';
+                    let d = new Date();
+                    elementos[elementos.length-1].hora = d.getHours();
+                    elementos[elementos.length-1].minutos = d.getMinutes();
                 }
                 let nroMesa = $('#numeroMesa').val() as number;
                 let nombreCliente = $('#nombreCliente').val() as string;

@@ -5,6 +5,9 @@ var laComanda;
         function pedidosHandler() {
             this.pedidos = new Array();
         }
+        pedidosHandler.prototype.getNew = function () {
+            return new pedidosHandler();
+        };
         pedidosHandler.prototype.agregarPedido = function (numeroMesa, nombreCliente, precio, elementos) {
             var id = '';
             if (this != null) {
@@ -69,6 +72,8 @@ var laComanda;
             this.index = 0;
             this.tomadoPor = '';
             this.tiempoEstimado = '';
+            this.hora = 0;
+            this.minutos = 0;
         }
         elemento.parse = function (json) {
             var el;
@@ -78,6 +83,8 @@ var laComanda;
             el.estado = json['estado'];
             el.tomadoPor = json['tomadoPor'];
             el.tiempoEstimado = json['tiempoEstimado'];
+            el.hora = json['hora'];
+            el.minutos = json['minutos'];
             return el;
         };
         return elemento;

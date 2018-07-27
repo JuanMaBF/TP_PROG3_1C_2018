@@ -121,7 +121,6 @@ namespace laComanda {
                 let tiempoEstimado: string;
                 do {
                     tiempoEstimado = prompt("¿Cuantos minutos va a tardar?", "") as string;
-                    console.log(tiempoEstimado);
                 }while(!tiempoEstimado.match(/^-{0,1}\d+$/));
                 this.pedidosHand.pedidos.filter(p => p.id == id)[0].elementos[index].tiempoEstimado = tiempoEstimado;
             }
@@ -196,7 +195,7 @@ namespace laComanda {
                         p.estado = "Cerrado";
                     });
                     this.server.setPedidos(JSON.stringify(this.pedidosHand), () => {
-
+                        this.getPedidos();
                     });
                 }
                 this.server.setMesas(JSON.stringify(this.mesas), () => {});
