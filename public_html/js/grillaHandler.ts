@@ -31,6 +31,7 @@ namespace laComanda {
         public initGrilla() {
             if(this.tipoUsuario == 'mozo' || this.tipoUsuario == 'socio') {
                 $('#agregar-pedido-btn').css('display', 'block');
+                $('#select-filter').css('display', 'none');
                 this.server.getMesas((mes: string) => { 
                     this.mesas = lasMesas.parse(JSON.parse(mes));                    
                     this.loadGrillaMesas();
@@ -181,12 +182,14 @@ namespace laComanda {
 
         public loadMesaModalData(numero: string): void {
             let newHtml = '';
+            let total = 0;
             this.pedidosHand.pedidos.filter(p => p.numeroMesa.toString() == numero).forEach(p => {
                 let precioTotal = 0;
                 p.elementos.forEach(e => precioTotal += this.getPrecioElemento(e.nombre, e.cantidad));
+                total += precioTotal;
                 newHtml += `
-                <h3>Pedido `+p.id+` ($`+precioTotal+`)</h3>
                 <table id="tabla-modal" class="table mt-3">
+                <h3>Pedido `+p.id+` ($`+precioTotal+`)</h3>
                 <thead>
                     <tr>
                         <th scope="col">Pedido</th>
@@ -209,6 +212,7 @@ namespace laComanda {
                 newHtml += '</tbody>';
             });
             newHtml += '</table>';
+            newHtml += 'Total: $'+total;
             $("#modal-tables").html(newHtml);
         }
 

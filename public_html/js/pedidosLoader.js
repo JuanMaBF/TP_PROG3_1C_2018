@@ -78,7 +78,7 @@ var laComanda;
             }
             return precio;
         };
-        pedidosLoader.prototype.cargarPedido = function () {
+        pedidosLoader.prototype.cargarPedido = function (callback) {
             var _this = this;
             if (this.validatePedido()) {
                 var htmlElementos = $('.pedido-elemento');
@@ -98,6 +98,9 @@ var laComanda;
                     $("#pedidos-modal").modal('toggle');
                     _this.resetForm();
                 });
+                if (callback != undefined) {
+                    callback();
+                }
             }
         };
         pedidosLoader.prototype.validatePedido = function () {
@@ -178,7 +181,7 @@ function removeElemento(index) {
     plObj.removeElemento(index);
 }
 function cargarPedido() {
-    plObj.cargarPedido();
+    plObj.cargarPedido(grillaObj.getPedidos.bind(grillaObj));
 }
 function resetForm() {
     plObj.resetForm();

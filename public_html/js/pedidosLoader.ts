@@ -90,7 +90,7 @@ namespace laComanda {
             return precio;
         }
 
-        public cargarPedido(): void {
+        public cargarPedido(callback?: Function): void {
             if(this.validatePedido()) {
                 let htmlElementos = $('.pedido-elemento');
                 let elementos = new Array<elemento>();
@@ -109,6 +109,9 @@ namespace laComanda {
                     $("#pedidos-modal").modal('toggle');
                     this.resetForm();
                 });
+                if(callback != undefined) {
+                    callback();
+                }
             }
         }
 
@@ -195,7 +198,7 @@ function removeElemento(index: number) {
 }
 
 function cargarPedido() {
-    plObj.cargarPedido(); 
+    plObj.cargarPedido(grillaObj.getPedidos.bind(grillaObj)); 
 }
 
 function resetForm() {

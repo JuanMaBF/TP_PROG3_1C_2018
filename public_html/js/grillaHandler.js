@@ -24,6 +24,7 @@ var laComanda;
             var _this = this;
             if (this.tipoUsuario == 'mozo' || this.tipoUsuario == 'socio') {
                 $('#agregar-pedido-btn').css('display', 'block');
+                $('#select-filter').css('display', 'none');
                 this.server.getMesas(function (mes) {
                     _this.mesas = laComanda.lasMesas.parse(JSON.parse(mes));
                     _this.loadGrillaMesas();
@@ -128,16 +129,19 @@ var laComanda;
         grillaHandler.prototype.loadMesaModalData = function (numero) {
             var _this = this;
             var newHtml = '';
+            var total = 0;
             this.pedidosHand.pedidos.filter(function (p) { return p.numeroMesa.toString() == numero; }).forEach(function (p) {
                 var precioTotal = 0;
                 p.elementos.forEach(function (e) { return precioTotal += _this.getPrecioElemento(e.nombre, e.cantidad); });
-                newHtml += "\n                <h3>Pedido " + p.id + " ($" + precioTotal + ")</h3>\n                <table id=\"tabla-modal\" class=\"table mt-3\">\n                <thead>\n                    <tr>\n                        <th scope=\"col\">Pedido</th>\n                        <th scope=\"col\">Estado</th>\n                        <th scope=\"col\">Tomado por</th>\n                        <th scope=\"col\">Precio</th>\n                    </tr>\n                </thead>\n                <tbody>";
+                total += precioTotal;
+                newHtml += "\n                <table id=\"tabla-modal\" class=\"table mt-3\">\n                <h3>Pedido " + p.id + " ($" + precioTotal + ")</h3>\n                <thead>\n                    <tr>\n                        <th scope=\"col\">Pedido</th>\n                        <th scope=\"col\">Estado</th>\n                        <th scope=\"col\">Tomado por</th>\n                        <th scope=\"col\">Precio</th>\n                    </tr>\n                </thead>\n                <tbody>";
                 p.elementos.forEach(function (e) {
                     newHtml += "\n                        <tr>\n                            <th>" + e.nombre + " (" + e.cantidad + ")</th>\n                            <th>" + e.estado + "</th>\n                            <th>" + e.tomadoPor + "</th>\n                            <th>$" + _this.getPrecioElemento(e.nombre, e.cantidad) + "</th>\n                        </tr>";
                 });
                 newHtml += '</tbody>';
             });
             newHtml += '</table>';
+            newHtml += 'Total: $' + total;
             $("#modal-tables").html(newHtml);
         };
         grillaHandler.prototype.getPrecioElemento = function (nombre, cantidad) {
