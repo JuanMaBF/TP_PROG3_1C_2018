@@ -11,11 +11,13 @@ namespace laComanda {
         private server : server;
         private pedidosHand: pedidosHandler;
         private elementsIndex: number;
+        public username: string;
 
         public constructor() {
             this.server = new server();
             this.elementsIndex = 1;
             this.pedidosHand = new pedidosHandler();
+            this.username = localStorage.getItem('tipoUser') as string;
             this.getPedidos();
         }
 
@@ -97,6 +99,7 @@ namespace laComanda {
                     let nombre = $('#select-'+index).val() as string;
                     let cantidad = $('#num-'+index).val() as number;
                     elementos.push(new elemento(nombre, cantidad));
+                    elementos[elementos.length-1].tomadoPor = 'Sin tomar';
                 }
                 let nroMesa = $('#numeroMesa').val() as number;
                 let nombreCliente = $('#nombreCliente').val() as string;

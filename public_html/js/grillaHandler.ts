@@ -17,8 +17,8 @@ namespace laComanda {
             this.tipoUsuario = localStorage.getItem('tipoUser') as string;
             this.username = localStorage.getItem('tipoUser') as string;
             this.pedidosHand = new pedidosHandler();
-            this.getPedidos();
             this.mesas = new lasMesas();
+            this.getPedidos();
         }
 
         public getPedidos() {
@@ -138,9 +138,9 @@ namespace laComanda {
             let newHtml = `
                 <thead>
                     <tr>
-                        <th scope="col">Numero de mesa</th>
-                        <th scope="col">Estado</th>
-                        <th scope="col">Detalles</th>
+                        <th scope="col col-2">Mesa</th>
+                        <th scope="col col-7">Estado</th>
+                        <th scope="col col-3">Detalles</th>
                     </tr>
                 </thead>
                 <tbody>`;
@@ -163,7 +163,7 @@ namespace laComanda {
                         </th>
                         <th>
                             <button class="btn btn-secondary" data-toggle="modal" data-target="#mesaModal"
-                            onclick="loadMesaModalData('`+m.numero+`=')">
+                            onclick="loadMesaModalData('`+m.numero+`')">
                                 Ver
                             </button>
                         </th>
@@ -173,12 +173,65 @@ namespace laComanda {
             $("#tabla-pedidos").html(newHtml);                 
         }
 
-        public loadMesaModalData(numero: string): void {
-
+        public cambiarEstadoMesa(numero: string): void {
+            let newEstado = $("#estado-mesa-"+numero).val() as string;
+            this.mesas.mesas.filter(m => m.numero == numero)[0].estado = newEstado;
+            this.server.setMesas(JSON.stringify(this.mesas), () => {});
         }
 
-        public cambiarEstadoMesa(numero: string): void {
+        public loadMesaModalData(numero: string): void {
+            let newHtml = '';
+            this.pedidosHand.pedidos.filter(p => p.numeroMesa.toString() == numero).forEach(p => {
+                let precioTotal = 0;
+                p.elementos.forEach(e => precioTotal += this.getPrecioElemento(e.nombre, e.cantidad));
+                newHtml += `
+                <h3>Pedido `+p.id+` ($`+precioTotal+`)</h3>
+                <table id="tabla-modal" class="table mt-3">
+                <thead>
+                    <tr>
+                        <th scope="col">Pedido</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Tomado por</th>
+                        <th scope="col">Precio</th>
+                    </tr>
+                </thead>
+                <tbody>`;
 
+                p.elementos.forEach(e => {
+                    newHtml += `
+                        <tr>
+                            <th>`+e.nombre+` (`+e.cantidad+`)</th>
+                            <th>`+e.estado+`</th>
+                            <th>`+e.tomadoPor+`</th>
+                            <th>$`+this.getPrecioElemento(e.nombre, e.cantidad)+`</th>
+                        </tr>`
+                });
+                newHtml += '</tbody>';
+            });
+            newHtml += '</table>';
+            $("#modal-tables").html(newHtml);
+        }
+
+        public getPrecioElemento(nombre: string, cantidad: number) {
+            let precioUnidad = 0;
+            switch(nombre) {
+                case 'Vino tinto':
+                    precioUnidad = 25;
+                    break
+                case 'Vino blanco':
+                    precioUnidad = 20;
+                    break;
+                case 'Cerveza rubia':
+                case 'Cerveza negra':
+                    precioUnidad = 15;
+                case 'Tarta':
+                case 'Torta':
+                    precioUnidad = 10;
+                case 'Empanada':
+                case 'Alfajor':
+                    precioUnidad = 5;
+            }
+            return precioUnidad*cantidad;
         }
 
     }

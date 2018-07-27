@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>La comanda</title>
 </head>
-<body>
+<body style="max-width: 100vw;">
 
     <header>
         <nav class="navbar navbar-fixed-top">
@@ -47,32 +47,7 @@
                         </div>
                     </div>
                     <table id="tabla-pedidos" class="table mt-3">
-                        <thead>
-                            <tr>
-                                <th scope="col">Numero de mesa</th>
-                                <th scope="col">Estado</th>
-                                <th scope="col">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th><b>1</b></th>
-                                <th>
-                                    <select required class="form-control" id="numeroMesa">
-                                        <option>Con cliente esperando pedido</option>
-                                        <option>Con clientes comiendo</option>
-                                        <option>Con clientes pagando</option>
-                                        <option>Cerrada</option>
-                                    </select>
-                                </th>
-                                <th>
-                                    <button class="btn btn-secondary" data-toggle="modal" data-target="#mesaModal"
-                                    onclick="alert('fads')">
-                                        Ver
-                                    </button>
-                                </th>
-                            </tr>
-                        </tbody>
+                        
                     </table>
                 </div>
             </div>     
@@ -167,8 +142,8 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
-                    modal mesa
+                    <div class="modal-body" id="modal-tables">
+                        
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

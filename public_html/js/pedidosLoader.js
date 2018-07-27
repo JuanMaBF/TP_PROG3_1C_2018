@@ -10,6 +10,7 @@ var laComanda;
             this.server = new laComanda.server();
             this.elementsIndex = 1;
             this.pedidosHand = new laComanda.pedidosHandler();
+            this.username = localStorage.getItem('tipoUser');
             this.getPedidos();
         }
         pedidosLoader.prototype.addElemento = function () {
@@ -87,6 +88,7 @@ var laComanda;
                     var nombre = $('#select-' + index).val();
                     var cantidad = $('#num-' + index).val();
                     elementos.push(new laComanda.elemento(nombre, cantidad));
+                    elementos[elementos.length - 1].tomadoPor = 'Sin tomar';
                 }
                 var nroMesa = $('#numeroMesa').val();
                 var nombreCliente = $('#nombreCliente').val();

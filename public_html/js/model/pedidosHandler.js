@@ -45,10 +45,10 @@ var laComanda;
         pedido.parse = function (json) {
             var ped;
             var id = json['id'];
-            var numeroMesa = json['id'];
-            var nombreCliente = json['id'];
-            var estado = json['id'];
-            var precio = json['id'];
+            var numeroMesa = json['numeroMesa'];
+            var nombreCliente = json['nombreCliente'];
+            var estado = json['estado'];
+            var precio = json['precio'];
             var elementos = new Array();
             json['elementos'].forEach(function (el) {
                 elementos.push(elemento.parse(el));

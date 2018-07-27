@@ -10,8 +10,8 @@ var laComanda;
             this.tipoUsuario = localStorage.getItem('tipoUser');
             this.username = localStorage.getItem('tipoUser');
             this.pedidosHand = new laComanda.pedidosHandler();
-            this.getPedidos();
             this.mesas = new laComanda.lasMesas();
+            this.getPedidos();
         }
         grillaHandler.prototype.getPedidos = function () {
             var _this = this;
@@ -109,20 +109,57 @@ var laComanda;
             }
         };
         grillaHandler.prototype.loadGrillaMesas = function () {
-            var newHtml = "\n                <thead>\n                    <tr>\n                        <th scope=\"col\">Numero de mesa</th>\n                        <th scope=\"col\">Estado</th>\n                        <th scope=\"col\">Detalles</th>\n                    </tr>\n                </thead>\n                <tbody>";
+            var newHtml = "\n                <thead>\n                    <tr>\n                        <th scope=\"col col-2\">Mesa</th>\n                        <th scope=\"col col-7\">Estado</th>\n                        <th scope=\"col col-3\">Detalles</th>\n                    </tr>\n                </thead>\n                <tbody>";
             this.mesas.mesas.forEach(function (m) {
                 var espEst = m.estado == "Con cliente esperando pedido" ? 'selected' : '';
                 var comEst = m.estado == "Con clientes comiendo" ? 'selected' : '';
                 var pagEst = m.estado == "Con clientes pagando" ? 'selected' : '';
                 var cerrEst = m.estado == "Cerrada" ? 'selected' : '';
-                newHtml += "\n                    <tr>\n                        <th>" + m.numero + "</th>\n                        <th>\n                            <select onchange=\"cambiarEstadoMesa('" + m.numero + "')\" \n                            class=\"form-control\" id=\"estado-mesa-" + m.numero + "\">\n                                <option " + espEst + ">Con cliente esperando pedido</option>\n                                <option " + comEst + ">Con clientes comiendo</option>\n                                <option " + pagEst + ">Con clientes pagando</option>\n                                <option " + cerrEst + ">Cerrada</option>\n                            </select>\n                        </th>\n                        <th>\n                            <button class=\"btn btn-secondary\" data-toggle=\"modal\" data-target=\"#mesaModal\"\n                            onclick=\"loadMesaModalData('" + m.numero + "=')\">\n                                Ver\n                            </button>\n                        </th>\n                    </tr>";
+                newHtml += "\n                    <tr>\n                        <th>" + m.numero + "</th>\n                        <th>\n                            <select onchange=\"cambiarEstadoMesa('" + m.numero + "')\" \n                            class=\"form-control\" id=\"estado-mesa-" + m.numero + "\">\n                                <option " + espEst + ">Con cliente esperando pedido</option>\n                                <option " + comEst + ">Con clientes comiendo</option>\n                                <option " + pagEst + ">Con clientes pagando</option>\n                                <option " + cerrEst + ">Cerrada</option>\n                            </select>\n                        </th>\n                        <th>\n                            <button class=\"btn btn-secondary\" data-toggle=\"modal\" data-target=\"#mesaModal\"\n                            onclick=\"loadMesaModalData('" + m.numero + "')\">\n                                Ver\n                            </button>\n                        </th>\n                    </tr>";
             });
             newHtml += '</tbody>';
             $("#tabla-pedidos").html(newHtml);
         };
-        grillaHandler.prototype.loadMesaModalData = function (numero) {
-        };
         grillaHandler.prototype.cambiarEstadoMesa = function (numero) {
+            var newEstado = $("#estado-mesa-" + numero).val();
+            this.mesas.mesas.filter(function (m) { return m.numero == numero; })[0].estado = newEstado;
+            this.server.setMesas(JSON.stringify(this.mesas), function () { });
+        };
+        grillaHandler.prototype.loadMesaModalData = function (numero) {
+            var _this = this;
+            var newHtml = '';
+            this.pedidosHand.pedidos.filter(function (p) { return p.numeroMesa.toString() == numero; }).forEach(function (p) {
+                var precioTotal = 0;
+                p.elementos.forEach(function (e) { return precioTotal += _this.getPrecioElemento(e.nombre, e.cantidad); });
+                newHtml += "\n                <h3>Pedido " + p.id + " ($" + precioTotal + ")</h3>\n                <table id=\"tabla-modal\" class=\"table mt-3\">\n                <thead>\n                    <tr>\n                        <th scope=\"col\">Pedido</th>\n                        <th scope=\"col\">Estado</th>\n                        <th scope=\"col\">Tomado por</th>\n                        <th scope=\"col\">Precio</th>\n                    </tr>\n                </thead>\n                <tbody>";
+                p.elementos.forEach(function (e) {
+                    newHtml += "\n                        <tr>\n                            <th>" + e.nombre + " (" + e.cantidad + ")</th>\n                            <th>" + e.estado + "</th>\n                            <th>" + e.tomadoPor + "</th>\n                            <th>$" + _this.getPrecioElemento(e.nombre, e.cantidad) + "</th>\n                        </tr>";
+                });
+                newHtml += '</tbody>';
+            });
+            newHtml += '</table>';
+            $("#modal-tables").html(newHtml);
+        };
+        grillaHandler.prototype.getPrecioElemento = function (nombre, cantidad) {
+            var precioUnidad = 0;
+            switch (nombre) {
+                case 'Vino tinto':
+                    precioUnidad = 25;
+                    break;
+                case 'Vino blanco':
+                    precioUnidad = 20;
+                    break;
+                case 'Cerveza rubia':
+                case 'Cerveza negra':
+                    precioUnidad = 15;
+                case 'Tarta':
+                case 'Torta':
+                    precioUnidad = 10;
+                case 'Empanada':
+                case 'Alfajor':
+                    precioUnidad = 5;
+            }
+            return precioUnidad * cantidad;
         };
         return grillaHandler;
     }());

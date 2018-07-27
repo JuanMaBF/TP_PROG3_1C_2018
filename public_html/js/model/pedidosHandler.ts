@@ -57,10 +57,10 @@ namespace laComanda {
         public static parse(json: any): pedido {
             let ped: pedido;
             let id = json['id'] as string;
-            let numeroMesa = json['id'] as number;
-            let nombreCliente = json['id'] as string;
-            let estado = json['id'] as string;
-            let precio = json['id'] as number;
+            let numeroMesa = json['numeroMesa'] as number;
+            let nombreCliente = json['nombreCliente'] as string;
+            let estado = json['estado'] as string;
+            let precio = json['precio'] as number;
             let elementos = new Array<elemento>();
             json['elementos'].forEach((el: any) => {
                 elementos.push(elemento.parse(el));

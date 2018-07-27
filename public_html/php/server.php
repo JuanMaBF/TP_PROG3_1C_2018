@@ -34,7 +34,7 @@ function setPedidos($pedidos) {
 
 function getLasMesas() {
     $mesasFile = fopen("archivos/mesas.txt", "r") or die("No se puede abrir el archivo");
-    $fileContent = fread($mesasFile,filesize("archivos/pedidos.txt"));
+    $fileContent = fread($mesasFile,filesize("archivos/mesas.txt"));
     fclose($mesasFile);
     return $fileContent;
 }
